@@ -1,0 +1,41 @@
+{
+  "name": "koishi-plugin-wordle",
+  "description": "Play wordle in Koishi",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "author": "Seidko <seidko.coding@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koishijs/koishi-plugin-wordle.git",
+    "directory": "packages/wordle"
+  },
+  "bugs": {
+    "url": "https://github.com/koishijs/wordle/issues"
+  },
+  "homepage": "https://wordle.koishi.chat",
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "service",
+    "plugin",
+    "wordle",
+    "game"
+  ],
+  "koishi": {
+    "description": {
+      "zh": "在 Koishi 中玩 Wordle！"
+    }
+  },
+  "peerDependencies": {
+    "koishi": "^4.11.0"
+  },
+  "devDependencies": {
+    "koishi": "^4.11.0"
+  }
+}
