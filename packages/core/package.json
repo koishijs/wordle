@@ -38,6 +38,6 @@
     "koishi": "^4.11.0"
   },
   "devDependencies": {
-    "koishi": "^4.11.0"
+    "koishi": "^4.11.4"
   }
 }
