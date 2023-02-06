@@ -1,10 +1,10 @@
-# [@koishijs/wordle](https://wordle.koishi.chat)
+# 介绍
 
 在 Koishi 中游玩 Wordle 及相关游戏。
 
 ## 插件
 
-- [koishi-plugin-wordle](https://wordle.koishi.chat/plugins/wordle.html)
+- [koishi-plugin-wordle](./plugins/wordle)
 
 ## 许可证
 
