@@ -1,15 +1,15 @@
 import { Context, Element } from 'koishi'
 import {} from 'koishi-plugin-puppeteer'
 
-export function generateColor(color: WordleCore.BaseColor) {
+export function generateColor(color: WordleCore.BaseColor): Partial<CSSStyleDeclaration> {
   const base = {
     color: '#fff',
     border: '2px solid transparent',
   }
   switch (color) {
-    case 'correct': return { ...base, 'background-color': '#79b851' }
-    case 'wrong-place': return { ...base, 'background-color': '#f3c237' }
-    case 'none': return { ...base, 'background-color': '#a4aec4' }
+    case 'correct': return { ...base, backgroundColor: '#79b851' }
+    case 'wrong-place': return { ...base, backgroundColor: '#f3c237' }
+    case 'none': return { ...base, backgroundColor: '#a4aec4' }
   }
 }
 
@@ -52,14 +52,14 @@ export abstract class WordleCore {
           row.push(<span style={{
             width: 44,
             height: 44,
-            'font-size': 20,
+            fontSize: 20,
             border: '2px solid #dee1e9',
             margin: 3,
             display: 'flex',
-            'flex-direction': 'column',
-            'align-items': 'center',
-            'justify-content': 'center',
-            'border-radius': '5px',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '5px',
             ...generateColor(validation[i]?.color[j]),
           }}>{ input[i][j] }</span>)
         }
@@ -71,9 +71,9 @@ export abstract class WordleCore {
       return <html>
         <div style={{
           display: 'flex',
-          'flex-direction': 'column',
-          'align-items': 'center',
-          'font-weight': 700
+          flexDirection: 'column',
+          alignItems: 'center',
+          fontWeight: 700
         }}>{ elements }</div>
       </html>
   }
