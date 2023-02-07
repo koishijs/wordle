@@ -1,4 +1,4 @@
-import { Context, Element, h } from 'koishi'
+import { Context, Element } from 'koishi'
 import {} from 'koishi-plugin-puppeteer'
 
 export function generateColor(color: WordleCore.BaseColor) {
@@ -14,7 +14,9 @@ export function generateColor(color: WordleCore.BaseColor) {
 }
 
 export abstract class WordleCore {
-  constructor(protected ctx: Context, protected config: WordleCore.Config) {}
+  constructor(protected ctx: Context, protected config: WordleCore.Config) {
+    ctx.i18n.define('zh', require('./locales/zh-CN.yml'))
+  }
   abstract getTodayWord(): string
   abstract validateInput(input: string): WordleCore.Validation
   public render(input: string[], validation: WordleCore.Validation[]): Element {
@@ -39,8 +41,9 @@ export abstract class WordleCore {
         elements.push(<p>{ row }</p>)
       }
       return <>
-        <p>沃兜</p>
+        <p><i18n path="commands.wordle-core.messages.wordle"></i18n></p>
         { elements }
+        <i18n path="commands.wordle-core.messages.text-mode-prompt"></i18n>
       </>
     }
       for (let i = 0; i < input.length; i++) {
