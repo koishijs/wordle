@@ -21,6 +21,7 @@
     "test:html": "shx rm -rf coverage && c8 -r html yarn test"
   },
   "devDependencies": {
+    "@hamster-bot/eslint-config": "^1.0.1",
     "@koishijs/vitepress": "^1.6.3",
     "@types/chai": "^4.3.4",
     "@types/mocha": "^9.1.1",
@@ -45,5 +46,8 @@
     "yakumo-upgrade": "^0.3.2",
     "yakumo-version": "^0.3.2",
     "yml-register": "^1.1.0"
+  },
+  "eslintConfig": {
+    "extends": "@hamster-bot/eslint-config/typescript"
   }
 }
