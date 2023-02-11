@@ -1,6 +1,5 @@
-commands:
-  wordle-core:
-    messages:
-      wordle: Wordle
-      text-mode-prompt: |
-        ` x ` 的意思是完全没有此字母，`(x)` 的意思是有此字母但位置错误，`[x]` 的意思是有此字母且位置正确
+wordle:
+  core:
+    wordle: Wordle
+    text-mode-prompt: |
+      ` x ` 的意思是完全没有此字母，`(x)` 的意思是有此字母但位置错误，`[x]` 的意思是有此字母且位置正确

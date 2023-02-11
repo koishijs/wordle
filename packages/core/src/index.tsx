@@ -13,69 +13,68 @@ export function generateColor(color: WordleCore.BaseColor): Partial<CSSStyleDecl
   }
 }
 
+const transformers: WordleCore.Transformers = {
+  correct: word => `[${word}]`,
+  'wrong-place': word => `(${word})`,
+  none: word => ` ${word} `,
+}
+
 export abstract class WordleCore {
   constructor(protected ctx: Context, protected config: WordleCore.Config) {
-    ctx.i18n.define('zh', require('./locales/zh-CN.yml'))
+    ctx.i18n.define('zh', require('./locales/zh-CN'))
   }
   abstract getTodayWord(): string
   abstract validateInput(input: string): WordleCore.Validation
   public render(input: string[], validation: WordleCore.Validation[]): Element {
+    const textMode = !(this.config.imageMode && this.ctx.puppeteer)
     const elements: Element[] = []
-    if (!(this.config.imageMode && this.ctx.puppeteer)) {
-      for (let i = 0; i < input.length; i++) {
-        let row = ''
+    for (let i = 0; i < input.length; i++) {
+      let row = []
+      if (textMode) {
         if (!validation[i]) break
-        for (let j = 0; j < input[i].length; j++) {
-          switch (validation[i]?.color[j]) {
-            case 'correct': 
-              row += `[${input[i][j]}]`
-              break
-            case 'wrong-place': 
-              row += `(${input[i][j]})`
-              break
-            case 'none': 
-              row += ` ${input[i][j]} `
-              break
-          }
-        }
-        elements.push(<p>{ row }</p>)
+        for (let j = 0; j < input[i].length; j++) row.push(transformers[validation[i]?.color[j]]?.(input[i][j]))
+      } else {
+        for (let j = 0; j < input[i].length; j++) row.push(<span class="cell" style={{ ...generateColor(validation[i]?.color[j]) }}>{ input[i][j] }</span>)
       }
-      return <>
-        <p><i18n path="commands.wordle-core.messages.wordle"></i18n></p>
-        { elements }
-        <i18n path="commands.wordle-core.messages.text-mode-prompt"></i18n>
-      </>
+      elements.push(textMode? row : 
+        <p class="row">{ row }</p>
+      )
     }
-      for (let i = 0; i < input.length; i++) {
-        const row = []
-        for (let j = 0; j < input[i].length; j++) {
-          row.push(<span style={{
-            width: 44,
-            height: 44,
-            fontSize: 20,
-            border: '2px solid #dee1e9',
-            margin: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '5px',
-            ...generateColor(validation[i]?.color[j]),
-          }}>{ input[i][j] }</span>)
+  return textMode? 
+    <>
+      <i18n path="wordle.core.wordle"/>
+      {elements}
+      <i18n path="wordle.core.text-mode-prompt"/>
+    </> : 
+    <html>
+      <div id="game">{ elements }</div>
+      <style>{`
+        #game {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-weight: 700;
         }
-        elements.push(<p style={{
-          display: 'flex',
-          margin: 0
-        }}>{ row }</p>)
-      }
-      return <html>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          fontWeight: 700
-        }}>{ elements }</div>
-      </html>
+        
+        #game .row {
+          display: flex;
+          margin: 0;
+        }
+        
+        #game .cell {
+          width: 44;
+          height: 44;
+          font-size: 20;
+          border: 2px solid #dee1e9;
+          margin: 3;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          border-radius: 5px;
+        }
+      `}</style>
+    </html>
   }
 }
 
@@ -89,4 +88,7 @@ export namespace WordleCore {
   export interface Config {
     imageMode: boolean
   }
+
+  export type Transformer<O = string> = (word: string) => O
+  export type Transformers = Record<WordleCore.BaseColor, WordleCore.Transformer>
 }
