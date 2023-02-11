@@ -44,7 +44,7 @@ export abstract class WordleCore {
     <>
       <i18n path="wordle.core.wordle"/>
       {elements}
-      <i18n path="wordle.core.text-mode-prompt"/>
+      <i18n path="wordle.core.text-mode-hint"/>
     </> : 
     <html>
       <div id="game">{ elements }</div>
