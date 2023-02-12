@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "@koishijs/wordle": ["packages/core/src"],
-      "koishi-plugin-*": ["packages/*/src"],
-    },
-  },
+      "koishi-plugin-*": ["packages/*/src"]
+    }
+  }
 }

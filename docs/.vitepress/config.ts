@@ -12,27 +12,28 @@ export default defineConfig({
   ],
 
   themeConfig: {
-    nav: [{
-      text: '更多',
-      items: [{
-        text: '关于我们',
+    nav: [
+      {
+        text: '更多',
         items: [
-          { text: 'Koishi 官网', link: 'https://koishi.chat' },
-        ]
-      }],
-    }],
+          {
+            text: '关于我们',
+            items: [{ text: 'Koishi 官网', link: 'https://koishi.chat' }],
+          },
+        ],
+      },
+    ],
 
-    sidebar: [{
-      text: '指南',
-      items: [
-        { text: '介绍', link: '/' },
-      ],
-    }, {
-      text: '更多',
-      items: [
-        { text: 'Koishi 官网', link: 'https://koishi.chat' },
-      ],
-    }],
+    sidebar: [
+      {
+        text: '指南',
+        items: [{ text: '介绍', link: '/' }],
+      },
+      {
+        text: '更多',
+        items: [{ text: 'Koishi 官网', link: 'https://koishi.chat' }],
+      },
+    ],
 
     socialLinks: {
       discord: 'https://discord.com/invite/xfxYwmd284',
