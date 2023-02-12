@@ -2,7 +2,7 @@
   "printWidth": 120,
   "arrowParens": "always",
   "bracketSameLine": false,
-  "bracketSpacing": false,
+  "bracketSpacing": true,
   "embeddedLanguageFormatting": "auto",
   "endOfLine": "lf",
   "jsxSingleQuote": true,
