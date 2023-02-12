@@ -1,4 +1,10 @@
+<p align="center">
+
+![header](./assets/header.png)
+
 # [@koishijs/wordle](https://wordle.koishi.chat)
+
+</p>
 
 在 Koishi 中游玩 Wordle 及相关游戏。
 
