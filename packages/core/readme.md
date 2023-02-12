@@ -1,6 +1,6 @@
 <p align="center">
 
-![header](./assets/header.png)
+![header](https://github.com/koishijs/wordle/blob/master/assets/header.png)
 
 # [@koishijs/wordle](https://wordle.koishi.chat)
 
