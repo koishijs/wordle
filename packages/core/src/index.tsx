@@ -1,5 +1,5 @@
 import { Context, Element } from 'koishi'
-import {} from 'koishi-plugin-puppeteer'
+import { } from 'koishi-plugin-puppeteer'
 
 // A helper function to mimic the behaviour of `styled-components`.
 // So we could use VSCode extension `vscode-styled-components` to
@@ -47,43 +47,48 @@ export abstract class WordleCore {
       if (textMode) return row
       return <p class='row'>{row}</p>
     })
+
     if (textMode) {
-      return <>
-      <i18n path='wordle.core.wordle' />
-      {elements}
-      <i18n path='wordle.core.text-mode-hint' />
-    </>
+      return (
+        <>
+          <i18n path='wordle.core.wordle' />
+          {elements}
+          <i18n path='wordle.core.text-mode-hint' />
+        </>
+      )
     }
-    return <html>
-      <div id='game'>{elements}</div>
-      <style>{css`
-        #game {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          font-weight: 700;
-        }
+    return (
+      <html>
+        <div id='game'>{elements}</div>
+        <style>{css`
+          #game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: 700;
+          }
 
-        #game .row {
-          display: flex;
-          margin: 0;
-        }
+          #game .row {
+            display: flex;
+            margin: 0;
+          }
 
-        #game .cell {
-          width: 44px;
-          height: 44px;
-          font-size: 20px;
-          border: 2px solid #dee1e9;
-          margin: 3px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          border-radius: 2px;
-          text-transform: uppercase;
-        }
-      `}</style>
-    </html>
+          #game .cell {
+            width: 44px;
+            height: 44px;
+            font-size: 20px;
+            border: 2px solid #dee1e9;
+            margin: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            text-transform: uppercase;
+          }
+        `}</style>
+      </html>
+    )
   }
 }
 
