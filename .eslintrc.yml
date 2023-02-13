@@ -1,9 +1,11 @@
-extends: "@hamster-bot/eslint-config/typescript"
-
+extends:
+  - '@hydrooj/eslint-config/base.yaml'
 rules:
   # TypeScript would do this check so we don't need this.
   import/no-unresolved: off
 
+  '@typescript-eslint/semi': [warn, never]
+  '@typescript-eslint/indent': [warn, 2]
 ignorePatterns:
   - node_modules
   - dist

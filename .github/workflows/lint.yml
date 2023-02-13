@@ -24,4 +24,4 @@ jobs:
         run: yarn install
 
       - name: Lint JavaScript
-        run: yarn run lint
+        run: yarn run lint:ci
