@@ -4,7 +4,7 @@ import {} from 'koishi-plugin-puppeteer'
 // A helper function to mimic the behaviour of `styled-components`.
 // So we could use VSCode extension `vscode-styled-components` to
 // highlight our CSS code.
-const css = (args: TemplateStringsArray) => args.join('')
+const css = (args: TemplateStringsArray, ...values: any[]) => String.raw({ raw: args }, ...values)
 
 export function generateColor(color: WordleCore.BaseState): Partial<CSSStyleDeclaration> {
   const base = {
