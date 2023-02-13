@@ -58,18 +58,5 @@
     "yakumo-upgrade": "^0.3.2",
     "yakumo-version": "^0.3.2",
     "yml-register": "^1.1.0"
-  },
-  "eslintConfig": {
-    "extends": "@hamster-bot/eslint-config/typescript",
-    "ignorePatterns": [
-      "node_modules",
-      "dist",
-      "coverage",
-      "docs",
-      "packages/*/node_modules",
-      "packages/*/dist",
-      "packages/*/coverage",
-      "packages/*/docs"
-    ]
   }
 }
