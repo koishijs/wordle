@@ -6,7 +6,7 @@ import {} from 'koishi-plugin-puppeteer'
 // highlight our CSS code.
 const css = (args: TemplateStringsArray) => args.join('')
 
-export function generateColor(color: WordleCore.BaseColor): Partial<CSSStyleDeclaration> {
+export function generateColor(color: WordleCore.BaseStage): Partial<CSSStyleDeclaration> {
   const base = {
     color: '#fff',
     border: '2px solid transparent',
@@ -33,71 +33,60 @@ export abstract class WordleCore {
   }
 
   abstract getTodayWord(): string
-  abstract validateInput(input: string): WordleCore.Validation
-  public render(input: string[], validation: WordleCore.Validation[]): Element {
+  abstract validateInput(input: WordleCore.Character): boolean
+  public render(chars: WordleCore.Character[][]): Element {
     const textMode = !(this.config.imageMode && this.ctx.puppeteer)
-    const elements: Element[] = []
-    for (let i = 0; i < input.length; i++) {
-      const row = []
-      if (textMode) {
-        if (!validation[i]) break
-        for (let j = 0; j < input[i].length; j++) row.push(transformers[validation[i]?.color[j]]?.(input[i][j]))
-      } else {
-        for (let j = 0; j < input[i].length; j++) {
-          row.push(
-            <span class='cell' style={{ ...generateColor(validation[i]?.color[j]) }}>
-              {input[i][j]}
-            </span>,
-          )
+    const elements: Element[] = chars.map(r => {
+      const row = r.map(c => {
+        if (textMode) return transformers[c?.stage]
+        return <span class='cell' style={{ ...generateColor(c?.stage) }}> {c?.char} </span>
+      })
+      if (textMode) return row
+      return <p class='row'>{row}</p>
+    })
+    if (textMode) return <>
+      <i18n path='wordle.core.wordle' />
+      {elements}
+      <i18n path='wordle.core.text-mode-hint' />
+    </>
+    return <html>
+      <div id='game'>{elements}</div>
+      <style>{css`
+        #game {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-weight: 700;
         }
-      }
-      elements.push(textMode ? row : <p class='row'>{row}</p>)
-    }
-    return textMode ? (
-      <>
-        <i18n path='wordle.core.wordle' />
-        {elements}
-        <i18n path='wordle.core.text-mode-hint' />
-      </>
-    ) : (
-      <html>
-        <div id='game'>{elements}</div>
-        <style>{css`
-          #game {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-weight: 700;
-          }
 
-          #game .row {
-            display: flex;
-            margin: 0;
-          }
+        #game .row {
+          display: flex;
+          margin: 0;
+        }
 
-          #game .cell {
-            width: 44;
-            height: 44;
-            font-size: 20;
-            border: 2px solid #dee1e9;
-            margin: 3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 5px;
-          }
-        `}</style>
-      </html>
-    )
+        #game .cell {
+          width: 44px;
+          height: 44px;
+          font-size: 20px;
+          border: 2px solid #dee1e9;
+          margin: 3px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          border-radius: 2px;
+          text-transform: uppercase;
+        }
+      `}</style>
+    </html>
   }
 }
 
 export namespace WordleCore {
-  export type BaseColor = 'none' | 'wrong-place' | 'correct'
-  export interface Validation<Color = WordleCore.BaseColor> {
-    isValid: boolean
-    color: Color[]
+  export type BaseStage = 'none' | 'wrong-place' | 'correct'
+  export interface Character<Stage = WordleCore.BaseStage> {
+    char: string
+    stage?: Stage
   }
 
   export interface Config {
@@ -105,5 +94,5 @@ export namespace WordleCore {
   }
 
   export type Transformer<O = string> = (word: string) => O
-  export type Transformers = Record<WordleCore.BaseColor, WordleCore.Transformer>
+  export type Transformers = Record<WordleCore.BaseStage, WordleCore.Transformer>
 }
