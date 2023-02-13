@@ -1,4 +1,9 @@
 extends: "@hamster-bot/eslint-config/typescript"
+
+rules:
+  # TypeScript would do this check so we don't need this.
+  import/no-unresolved: off
+
 ignorePatterns:
   - node_modules
   - dist
