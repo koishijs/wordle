@@ -28,12 +28,15 @@ const transformers: WordleCore.Transformers = {
 }
 
 export abstract class WordleCore {
+  protected todayWord: string
+
   constructor(protected ctx: Context, protected config: WordleCore.Config) {
     ctx.i18n.define('zh', require('./locales/zh-CN'))
   }
 
-  abstract getTodayWord(): string
+  abstract getTodayWord(): Promise<string>
   abstract validateInput(input: WordleCore.Character): boolean
+  abstract getRandomWord(): string
   public render(chars: WordleCore.Character[][]): Element {
     const textMode = !(this.config.imageMode && this.ctx.puppeteer)
     const elements: Element[] = chars.map(r => {
