@@ -6,7 +6,7 @@ import {} from 'koishi-plugin-puppeteer'
 // highlight our CSS code.
 const css = (args: TemplateStringsArray) => args.join('')
 
-export function generateColor(color: WordleCore.BaseStage): Partial<CSSStyleDeclaration> {
+export function generateColor(color: WordleCore.BaseState): Partial<CSSStyleDeclaration> {
   const base = {
     color: '#fff',
     border: '2px solid transparent',
@@ -44,11 +44,13 @@ export abstract class WordleCore {
       if (textMode) return row
       return <p class='row'>{row}</p>
     })
-    if (textMode) return <>
+    if (textMode) {
+      return <>
       <i18n path='wordle.core.wordle' />
       {elements}
       <i18n path='wordle.core.text-mode-hint' />
     </>
+    }
     return <html>
       <div id='game'>{elements}</div>
       <style>{css`
@@ -83,8 +85,8 @@ export abstract class WordleCore {
 }
 
 export namespace WordleCore {
-  export type BaseStage = 'none' | 'wrong-place' | 'correct'
-  export interface Character<Stage = WordleCore.BaseStage> {
+  export type BaseState = 'none' | 'wrong-place' | 'correct'
+  export interface Character<Stage = WordleCore.BaseState> {
     char: string
     stage?: Stage
   }
@@ -94,5 +96,5 @@ export namespace WordleCore {
   }
 
   export type Transformer<O = string> = (word: string) => O
-  export type Transformers = Record<WordleCore.BaseStage, WordleCore.Transformer>
+  export type Transformers = Record<WordleCore.BaseState, WordleCore.Transformer>
 }
