@@ -1,0 +1,10 @@
+extends: "@hamster-bot/eslint-config/typescript"
+ignorePatterns:
+  - node_modules
+  - dist
+  - coverage
+  - docs
+  - packages/*/node_modules
+  - packages/*/dist
+  - packages/*/coverage
+  - packages/*/docs
