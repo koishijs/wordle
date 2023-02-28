@@ -1,0 +1,6 @@
+commands:
+  wordle:
+    messages:
+      start: 开始你的wordle挑战！
+      win: 恭喜你获得胜利！
+      lose: 好可惜……再接再厉吧！

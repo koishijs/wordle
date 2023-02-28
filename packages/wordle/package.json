@@ -30,6 +30,11 @@
   "koishi": {
     "description": {
       "zh": "在 Koishi 中玩 Wordle！"
+    },
+    "service": {
+      "optional": [
+        "puppeteer"
+      ]
     }
   },
   "peerDependencies": {
