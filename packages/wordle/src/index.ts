@@ -59,9 +59,8 @@ export class Wordle extends WordleCore {
   }
 
   validateInput(input: string, solution: string): WordleCore.Character[] {
-    if (input.length !== solution.length || !require('./wordlist').includes(input)) {
-      return
-    }
+    if (!input || input.length !== solution.length || !require('./wordlist').includes(input)) return
+
     const states: WordleCore.Character[] = []
 
     for (let i = 0; i < input.length; i++) {
