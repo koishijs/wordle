@@ -1,5 +1,7 @@
 wordle:
   core:
     wordle: Wordle
-    text-mode-hint: |
+    text-mode: |
+      Wordle
+      {0}
       ` x ` 的意思是完全没有此字母，`(x)` 的意思是有此字母但位置错误，`[x]` 的意思是有此字母且位置正确

@@ -27,7 +27,7 @@ const transformers: WordleCore.Transformers = {
   'none': (word) => ` ${word} `,
 }
 
-export abstract class WordleCore {
+export abstract class WordleCore<T extends WordleCore.Character = WordleCore.Character> {
   protected todayWord: string
 
   constructor(protected ctx: Context, protected config: WordleCore.Config) {
@@ -35,28 +35,22 @@ export abstract class WordleCore {
   }
 
   abstract getTodayWord(): Promise<string>
-  abstract validateInput(input: WordleCore.Character): boolean
+  abstract validateInput(input: string, solution: string): T[]
   abstract getRandomWord(): string
-  public render(chars: WordleCore.Character[][]): Element {
+  public render(chars: T[][]): Element {
     const textMode = !(this.config.imageMode && this.ctx.puppeteer)
     const elements: Element[] = chars.map(r => {
       const row = r.map(c => {
-        if (textMode) return transformers[c?.stage]
+        if (!c && textMode) return ''
+        if (textMode) return transformers[c?.stage](c?.char.toUpperCase())
         return <span class='cell' style={{ ...generateColor(c?.stage) }}> {c?.char} </span>
       })
-      if (textMode) return row
+      if (textMode) return <p>{row.join('')}</p>
       return <p class='row'>{row}</p>
     })
 
-    if (textMode) {
-      return (
-        <>
-          <i18n path='wordle.core.wordle' />
-          {elements}
-          <i18n path='wordle.core.text-mode-hint' />
-        </>
-      )
-    }
+    if (textMode) return <>{elements}</>
+
     return (
       <html>
         <div id='game'>{elements}</div>
@@ -94,7 +88,7 @@ export abstract class WordleCore {
 
 export namespace WordleCore {
   export type BaseState = 'none' | 'wrong-place' | 'correct'
-  export interface Character<Stage = WordleCore.BaseState> {
+  export interface Character<Stage extends BaseState = BaseState> {
     char: string
     stage?: Stage
   }
