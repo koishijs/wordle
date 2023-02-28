@@ -17,30 +17,32 @@ export class Wordle extends WordleCore {
     super(ctx, config)
     ctx.i18n.define('zh', require('./locales/zh-CN'))
 
-    ctx.command('wordle').action(async ({ session }) => {
-      await session.send(session.text('.start'))
-      const solution = await this.getTodayWord()
-      const input = make2dArray<WordleCore.Character>(5, 6)
+    ctx.command('wordle')
+      .option('random', '-r', { descPath: '' })
+      .action(async ({ session, options }) => {
+        await session.send(session.text('.start'))
+        const solution = await (options ? this.getRandomWord() : this.getTodayWord())
+        const input = make2dArray<WordleCore.Character>(5, 6)
 
-      let count = 0
-      while (count < 6) {
-        const chars = this.validateInput(await session.prompt(180000), solution)
-        if (!chars) {
-          await session.send('wordle.errors.invalid-word')
-          continue
+        let count = 0
+        while (count < 6) {
+          const chars = this.validateInput(await session.prompt(180000), solution)
+          if (!chars) {
+            await session.send('wordle.errors.invalid-word')
+            continue
+          }
+
+          input[count] = chars
+
+          await session.send(config.imageMode ? this.render(input)
+            : session.text('wordle.core.text-mode', [this.render(input)]),
+          )
+          if (chars.every(c => c.stage === 'correct')) break
+          count++
         }
-
-        input[count] = chars
-
-        await session.send(config.imageMode ? this.render(input)
-          : session.text('wordle.core.text-mode', [this.render(input)]),
-        )
-        if (chars.every(c => c.stage === 'correct')) break
-        count++
-      }
-      if (count < 6) return session.text('.win')
-      return session.text('.lose')
-    })
+        if (count < 6) return session.text('.win')
+        return session.text('.lose')
+      })
   }
 
   async getTodayWord(date?: string) {
