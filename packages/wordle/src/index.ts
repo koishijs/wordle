@@ -1,4 +1,4 @@
-import { WordleCore } from '@koishijs/wordle/src'
+import { WordleCore } from '@koishijs/wordle'
 import { Context, Schema, Time, Random } from 'koishi'
 
 function make2dArray<T extends any>(row: number, column: number, value?: T): T[][] {
