@@ -35,7 +35,20 @@ export abstract class WordleCore<T extends WordleCore.Character = WordleCore.Cha
   }
 
   abstract getTodayWord(): Promise<string>
-  abstract validateInput(input: string, solution: string): T[]
+  async validateInput(input: string, solution: string): Promise<T[]> {
+    return input.split('').map((c, i) => {
+      const char: T = { char: c }
+      if (c === solution[i]) {
+        char.stage = 'correct'
+      } else if (solution.includes(c)) {
+        char.stage = 'wrong-place'
+      } else {
+        char.stage = 'none'
+      }
+      return char
+    })
+  }
+
   abstract getRandomWord(): string
   public render(chars: T[][]): Element {
     const textMode = !(this.config.imageMode && this.ctx.puppeteer)
