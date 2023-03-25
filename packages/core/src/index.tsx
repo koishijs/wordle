@@ -28,10 +28,24 @@ const transformers: WordleCore.Transformers = {
 }
 
 export abstract class WordleCore<T extends WordleCore.Character = WordleCore.Character> {
-  protected todayWord: string
+  protected _todayWord: string
+  private _timer: NodeJS.Timeout
 
   constructor(protected ctx: Context, protected config: WordleCore.Config) {
     ctx.i18n.define('zh', require('./locales/zh-CN'))
+  }
+
+  get todayWord(): string {
+    return this._todayWord
+  }
+
+  set todayWord(word: string) {
+    this._todayWord = word
+
+    if (this._timer) clearTimeout(this._timer)
+    this._timer = setTimeout(() => {
+      this._todayWord = ''
+    }, 24 * 60 * 60 * 1000)
   }
 
   abstract getTodayWord(): Promise<string>
