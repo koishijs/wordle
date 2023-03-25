@@ -63,7 +63,7 @@ export abstract class WordleCore<T extends WordleCore.Character = WordleCore.Cha
     })
   }
 
-  abstract getRandomWord(): string
+  abstract getRandomWord(): Promise<string>
   public render(chars: T[][]): Element {
     const textMode = !(this.config.imageMode && this.ctx.puppeteer)
     const elements: Element[] = chars.map(r => {

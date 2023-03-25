@@ -58,7 +58,7 @@ export class Wordle extends WordleCore {
     return this.todayWord
   }
 
-  getRandomWord(): string {
+  async getRandomWord(): Promise<string> {
     return Random.pick(this.wordlist)
   }
 
