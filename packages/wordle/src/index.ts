@@ -13,8 +13,12 @@ function make2dArray<T extends any>(row: number, column: number, value?: T): T[]
 }
 
 export class Wordle extends WordleCore {
+  private wordlist: string[] = []
   constructor(ctx: Context, config: Wordle.Config) {
     super(ctx, config)
+
+    this.wordlist = require('./wordlist')
+
     ctx.i18n.define('zh', require('./locales/zh-CN'))
 
     ctx.command('wordle')
@@ -55,11 +59,11 @@ export class Wordle extends WordleCore {
   }
 
   getRandomWord(): string {
-    return Random.pick(require('./wordlist'))
+    return Random.pick(this.wordlist)
   }
 
   validateInput(input: string, solution: string): WordleCore.Character[] {
-    if (!input || input.length !== solution.length || !require('./wordlist').includes(input)) return
+    if (!input || input.length !== solution.length || !this.wordlist.includes(input)) return
 
     const states: WordleCore.Character[] = []
 
