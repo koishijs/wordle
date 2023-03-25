@@ -79,9 +79,9 @@ export class Wordle extends WordleCore {
 export namespace Wordle {
   export const name = 'koishi-plugin-wordle'
   export interface Config extends WordleCore.Config {}
-  export const Config: Schema<Config> = Schema.object({
-    imageMode: Schema.boolean().default(true),
-  })
+  export const Config: Schema<Config> = Schema.intersect([
+    WordleCore.Config,
+  ])
 }
 
 export default Wordle

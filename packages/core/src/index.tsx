@@ -1,4 +1,4 @@
-import { Context, Element } from 'koishi'
+import { Context, Element, Schema } from 'koishi'
 import { } from 'koishi-plugin-puppeteer'
 
 // A helper function to mimic the behaviour of `styled-components`.
@@ -123,6 +123,10 @@ export namespace WordleCore {
   export interface Config {
     imageMode: boolean
   }
+
+  export const Config = Schema.object({
+    imageMode: Schema.boolean().default(true).description('是否使用图片模式'),
+  })
 
   export type Transformer<O = string> = (word: string) => O
   export type Transformers = Record<WordleCore.BaseState, WordleCore.Transformer>
