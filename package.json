@@ -24,6 +24,8 @@
   },
   "devDependencies": {
     "@hamster-bot/eslint-config": "^1.0.1",
+    "@koishijs/plugin-database-memory": "^2.3.4",
+    "@koishijs/plugin-mock": "^2.5.2",
     "@koishijs/vitepress": "^3.0.0",
     "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.1",

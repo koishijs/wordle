@@ -816,6 +816,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@koishijs/plugin-database-memory@npm:^2.3.4":
+  version: 2.3.4
+  resolution: "@koishijs/plugin-database-memory@npm:2.3.4"
+  dependencies:
+    "@minatojs/driver-memory": ^2.3.4
+  peerDependencies:
+    koishi: ^4.11.9
+  checksum: 3372672a39a91701361ddf7aba6f1a7a4b60e5d0b5ba0e1c273050f063696726f4db9e9a7e4fe8110e760ff786071dbe29e9f7b85addfa9af5e7847661e7af89
+  languageName: node
+  linkType: hard
+
+"@koishijs/plugin-mock@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "@koishijs/plugin-mock@npm:2.5.2"
+  peerDependencies:
+    koishi: ^4.14.4
+  checksum: b730c97b4d8a311315c653e0304c1f2bb1477350030e504f7924d0c336a981464187622f0dfd0667f95cea1a098411733c17264412e850f5f03ff6df8205c1ff
+  languageName: node
+  linkType: hard
+
 "@koishijs/utils@npm:^7.0.5":
   version: 7.0.5
   resolution: "@koishijs/utils@npm:7.0.5"
@@ -907,6 +927,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@minatojs/driver-memory@npm:^2.3.4":
+  version: 2.3.4
+  resolution: "@minatojs/driver-memory@npm:2.3.4"
+  dependencies:
+    cosmokit: ^1.4.1
+  peerDependencies:
+    "@minatojs/core": ^2.3.1
+  checksum: 91560eb606deb7abc101bbd84658d902b462d58376f3af2bd2c7dcdde706a33985d550b9451ccb240c1f3e694544065f8dd1f908833afaab7f5bc3d5be6fa15c
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -985,6 +1016,8 @@ __metadata:
   resolution: "@root/wordle@workspace:."
   dependencies:
     "@hamster-bot/eslint-config": ^1.0.1
+    "@koishijs/plugin-database-memory": ^2.3.4
+    "@koishijs/plugin-mock": ^2.5.2
     "@koishijs/vitepress": ^3.0.0
     "@types/chai": ^4.3.6
     "@types/mocha": ^10.0.1
