@@ -13,3 +13,6 @@ pipeline:
   build:
     - tsc
     - esbuild
+
+alias:
+  wordle: packages/core
