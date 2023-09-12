@@ -20,7 +20,7 @@ tsconfig.tsbuildinfo
 *.njsproj
 *.sln
 
-.yarn/
+.yarn/*
 !.yarn/patches
 !.yarn/releases
 !.yarn/plugins
