@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 
 on:
   push:
@@ -23,5 +23,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Lint JavaScript
-        run: yarn run lint
+      - name: Build
+        run: yarn run build
+
+      - name: Test
+        run: yarn run test

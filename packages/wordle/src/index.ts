@@ -7,11 +7,11 @@ export class Wordle extends WordleCore {
   getTodayWord(): string {
     return ''
   }
+
   validateInput(): WordleCore.Validation {
     return {
       isValid: false,
       color: [],
-      
     }
   }
 }
