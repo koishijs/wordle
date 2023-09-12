@@ -32,6 +32,9 @@
       "zh": "在 Koishi 中玩 Wordle！"
     }
   },
+  "dependencies": {
+    "@koishijs/wordle": "^0.0.1"
+  },
   "peerDependencies": {
     "koishi": "^4.11.0"
   },

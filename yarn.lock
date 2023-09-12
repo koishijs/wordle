@@ -848,7 +848,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koishijs/wordle@workspace:packages/core":
+"@koishijs/wordle@^0.0.1, @koishijs/wordle@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@koishijs/wordle@workspace:packages/core"
   dependencies:
@@ -4865,6 +4865,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "koishi-plugin-wordle@workspace:packages/wordle"
   dependencies:
+    "@koishijs/wordle": ^0.0.1
     koishi: ^4.14.5
   peerDependencies:
     koishi: ^4.11.0
