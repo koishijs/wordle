@@ -1,21 +1,11 @@
-import { WordleCore } from '@koishijs/wordle'
-import { Context } from 'koishi'
+import { defineVariation } from '@koishijs/wordle'
 
-export const name = 'koishi-plugin-wordle'
-
-export class Wordle extends WordleCore {
-  getTodayWord(): string {
-    return ''
-  }
-
-  validateInput(): WordleCore.Validation {
-    return {
-      isValid: false,
-      color: [],
-    }
-  }
-}
-
-export function apply(ctx: Context) {
-  // TODO: call wordle
-}
+export default defineVariation({
+  name: 'koishi-plugin-wordle',
+  command: 'wordle',
+  possibleUnitResults: ['partially-correct'] as const,
+  init(command, ctx) {},
+  handleInput(input, session, ctx) {
+    return []
+  },
+})
