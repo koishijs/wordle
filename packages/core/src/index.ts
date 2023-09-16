@@ -1,6 +1,6 @@
 import { Command, Context, Plugin, Session } from 'koishi'
 
-export interface WordleVariation<WordType = string, MoreUnitResult extends string = string>
+export interface WordleVariation<WordType extends any[] = string[], MoreUnitResult = WordType[number]>
   extends Omit<Plugin.Object, 'apply'> {
   command: string | Command
   possibleUnitResults?: readonly MoreUnitResult[]
@@ -9,7 +9,12 @@ export interface WordleVariation<WordType = string, MoreUnitResult extends strin
   // Game logic and lifecycle
   onGameStart?: (session: Session, ctx: Context) => Promise<void>
   onGameEnd?: (session: Session, ctx: Context) => Promise<void>
-  handleInput?: (input: string, session: Session, ctx: Context) => Wordle.UnitResult<MoreUnitResult>[]
+  handleInput?: <WordType extends any[] = string[]>(
+    input: string,
+    state: Wordle.WordleState<WordType>,
+    session: Session,
+    ctx: Context,
+  ) => Promise<Wordle.VarificatedResult<MoreUnitResult>>
 }
 
 export namespace Wordle {
@@ -28,12 +33,17 @@ export namespace Wordle {
 
   export type UnitResultType = 'correct' | 'bad-position' | 'incorrect'
 
-  export interface UnitResult<MoreUnitResult extends string> {
+  export interface UnitResult<MoreUnitResult> {
     type: UnitResultType | MoreUnitResult
+  }
+
+  export interface VarificatedResult<MoreUnitResult = string> {
+    unitResults: UnitResult<MoreUnitResult>[]
+    type: 'bad-length' | UnitResultType
   }
 }
 
-export function defineVariation<WordType = string, MoreUnitResult extends string = string>(
+export function defineVariation<WordType extends any[] = string[], MoreUnitResult = string>(
   variation: WordleVariation<WordType, MoreUnitResult>,
 ): Plugin.Constructor {
   let command: Command
@@ -55,7 +65,7 @@ export function defineVariation<WordType = string, MoreUnitResult extends string
         }
         if (state.state === Wordle.GameState.Started) {
           if (word) {
-            variation.handleInput?.(word, session, ctx)
+            variation.handleInput?.(word, state, session, ctx)
           } else {
             return session?.text('wordle.messages.started', [command.name])
           }
