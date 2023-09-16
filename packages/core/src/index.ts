@@ -24,13 +24,14 @@ export namespace Wordle {
   }
 }
 
-export function defineVariation<MoreUnitResult extends string>(variation: WordleVariation<MoreUnitResult>): Plugin {
+export function defineVariation<MoreUnitResult extends string>(
+  variation: WordleVariation<MoreUnitResult>,
+): Plugin.Constructor {
   let command: Command
   const sessionState = new Map<string, Wordle.GameState>()
 
-  return {
-    ...variation,
-    apply(ctx) {
+  return class {
+    constructor(ctx: Context) {
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
       ctx.i18n.define('zh', require('./locales/zh-CN'))
@@ -55,6 +56,6 @@ export function defineVariation<MoreUnitResult extends string>(variation: Wordle
           variation.onGameStart?.(session, ctx)
         }
       })
-    },
+    }
   }
 }
