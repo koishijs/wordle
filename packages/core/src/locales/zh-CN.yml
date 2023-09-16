@@ -1,0 +1,6 @@
+wordle:
+  messages:
+    not-started: 游戏尚未开始，请使用 {0} 开始游戏。
+    no-input: 游戏正在进行，请使用 {0} <答案> 提交你猜测的结果。
+    timeout: 游戏已经超时，正确答案是 {0}。
+    correct: 恭喜你，你猜对了！

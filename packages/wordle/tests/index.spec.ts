@@ -2,7 +2,7 @@ import memory from '@koishijs/plugin-database-memory'
 import mock from '@koishijs/plugin-mock'
 import { App } from 'koishi'
 
-import * as wordle from '../src'
+import wordle from '../src'
 
 describe('wordle', () => {
   const app = new App()
