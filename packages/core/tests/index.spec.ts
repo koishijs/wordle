@@ -1,6 +1,5 @@
 import memory from '@koishijs/plugin-database-memory'
 import mock from '@koishijs/plugin-mock'
-import { expect } from 'chai'
 import { App } from 'koishi'
 
 import { defineVariation } from '../src'
