@@ -7,10 +7,7 @@ export default defineVariation({
   async getCurrentWord(session, ctx) {
     const date = new Date().toISOString().slice(0, 10)
     const { solution } = await ctx.http.get<NYTimesWordleResponse>(`https://www.nytimes.com/svc/wordle/v2/${date}.json`)
-    return solution
-  },
-  handleInput(input, session, ctx) {
-    return []
+    return solution.split('')
   },
   async onGameStart(session, ctx) {
     session.send('game started')

@@ -9,6 +9,8 @@ describe('wordle', () => {
 
   app.plugin(mock)
   app.plugin(memory)
+  // set getCurrentWord always return 'hello'
+  ;(wordle as any).prototype.getCurrentWord = () => Promise.resolve(['h', 'e', 'l', 'l', 'o'])
   app.plugin(wordle)
 
   const client = app.mock.client('123')

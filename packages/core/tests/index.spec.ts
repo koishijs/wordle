@@ -13,6 +13,9 @@ describe('wordle', () => {
     defineVariation({
       name: 'wordle-core-test',
       command: 'wordle',
+      async onGameStart(session, ctx) {
+        session.send('game started')
+      },
       async getCurrentWord(session, ctx) {
         return 'hello'.split('')
       },

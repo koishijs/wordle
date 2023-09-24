@@ -49,7 +49,50 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
   let command: Command
   const sessionState = new Map<string, Wordle.WordleState<WordType>>()
 
+  const handleInput =
+    variation.handleInput ??
+    function (input, state: Wordle.WordleState<WordType>, session, ctx) {
+      const unitResults: Wordle.UnitResult<MoreUnitResult>[] = []
+      if (input.length !== state.currentWord.length) {
+        return { unitResults, type: 'bad-length' }
+      }
+      const currentWord = [...state.currentWord]
+      const guessedWords = state.guessedWords ?? []
+      const guessedCount = state.guessedCount ?? 0
+      for (let i = 0; i < input.length; i++) {
+        const char = input[i]
+        if (char === currentWord[i]) {
+          unitResults.push({ type: 'correct' })
+          currentWord[i] = ''
+        } else if (currentWord.includes(char)) {
+          unitResults.push({ type: 'bad-position' })
+        } else {
+          unitResults.push({ type: 'incorrect' })
+        }
+      }
+      if (unitResults.every((result) => result.type === 'correct')) {
+        // game ended
+        sessionState.set(`${session.guildId}.${session.channelId}`, {
+          state: Wordle.GameState.Ended,
+          currentWord: state.currentWord,
+          guessedWords: [...guessedWords, input as unknown as WordType],
+          guessedCount: guessedCount + 1,
+        })
+        variation.onGameEnd?.(session, ctx)
+        return { unitResults, type: 'correct' }
+      } else {
+        sessionState.set(`${session.guildId}.${session.channelId}`, {
+          state: Wordle.GameState.Started,
+          currentWord: state.currentWord,
+          guessedWords: [...guessedWords, input as unknown as WordType],
+          guessedCount: guessedCount + 1,
+        })
+        return { unitResults, type: 'incorrect' }
+      }
+    }
+
   return class {
+    _variation = variation
     constructor(ctx: Context) {
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
@@ -60,22 +103,26 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
       command.action(async ({ session }, word) => {
         const state = sessionState.get(`${session.guildId}.${session.channelId}`)
-        if ((!state || state.state === Wordle.GameState.NotStarted) && word) {
+        if ((!state || state?.state === Wordle.GameState.NotStarted) && word) {
           return session?.text('wordle.messages.not-started', [command.name])
         }
-        if (state.state === Wordle.GameState.Started) {
+        if (state?.state === Wordle.GameState.Started) {
           if (word) {
-            variation.handleInput?.(word, state, session, ctx)
+            handleInput(word, state, session, ctx)
           } else {
             return session?.text('wordle.messages.started', [command.name])
           }
         } else {
           // start a new game
           variation.onGameStart?.(session, ctx)
-          const currentWord = await variation.getCurrentWord(session, ctx)
+          const currentWord = await this.getCurrentWord(session, ctx)
           sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Started, currentWord })
         }
       })
+    }
+
+    getCurrentWord(session: Session, ctx: Context) {
+      return variation.getCurrentWord(session, ctx)
     }
   }
 }
