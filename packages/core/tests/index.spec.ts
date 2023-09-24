@@ -4,7 +4,7 @@ import { App } from 'koishi'
 
 import { defineVariation } from '../src'
 
-describe('wordle', () => {
+describe('core', () => {
   const app = new App()
 
   app.plugin(mock)
@@ -13,30 +13,12 @@ describe('wordle', () => {
     defineVariation({
       name: 'wordle-core-test',
       command: 'wordle',
+      validWords: ['hello', 'crown', 'panic', 'index', 'leben'].map((word) => word.split('')),
       async onGameStart(session, ctx) {
         session.send('game started')
       },
       async getCurrentWord(session, ctx) {
         return 'hello'.split('')
-      },
-      async handleInput(input, state, session, ctx) {
-        const { currentWord } = state
-        if (input.length !== currentWord.length) {
-          return { type: 'bad-length', unitResults: [] }
-        }
-        let type = 'correct' as 'correct' | 'incorrect'
-        const unitResults = input.split('').map((char, index) => {
-          if (char === currentWord[index]) {
-            return { type: 'correct' }
-          } else if (currentWord.includes(char)) {
-            type = 'incorrect'
-            return { type: 'bad-position' }
-          } else {
-            type = 'incorrect'
-            return { type: 'incorrect' }
-          }
-        })
-        return { type, unitResults }
       },
     }),
   )
@@ -46,7 +28,20 @@ describe('wordle', () => {
 
   const client = app.mock.client('123', 'group')
 
+  app.i18n.define('zh', {
+    wordle: {
+      messages: {
+        'invalid': 'not a word',
+        'bad-length': 'bad length',
+      },
+    },
+  })
+
   it('should start a game', async () => {
     await client.shouldReply('wordle', 'game started')
+  })
+
+  it('should flag a wrong word', async () => {
+    await client.shouldReply('wordle aaaaa', 'not a word')
   })
 })

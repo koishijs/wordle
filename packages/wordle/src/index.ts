@@ -1,8 +1,11 @@
 import { defineVariation } from '@koishijs/wordle'
 
+import wordlist from './data/wordlist.json'
+
 export default defineVariation({
   name: 'koishi-plugin-wordle',
   command: 'wordle',
+  validWords: wordlist.map((word: string) => word.split('')),
   init(command, ctx) {},
   async getCurrentWord(session, ctx) {
     const date = new Date().toISOString().slice(0, 10)

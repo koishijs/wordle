@@ -6,6 +6,8 @@ export interface WordleVariation<WordType extends any[] = string[], MoreUnitResu
   possibleUnitResults?: readonly MoreUnitResult[]
   init?: (command: Command, ctx: Context) => void
   getCurrentWord: (session: Session, ctx: Context) => Promise<WordType>
+  validWords?: WordType[]
+  validateWord?: (word: WordType[], session: Session, ctx: Context) => Promise<boolean>
   // Game logic and lifecycle
   onGameStart?: (session: Session, ctx: Context) => Promise<void>
   onGameEnd?: (session: Session, ctx: Context) => Promise<void>
@@ -39,7 +41,7 @@ export namespace Wordle {
 
   export interface VarificatedResult<MoreUnitResult = string> {
     unitResults: UnitResult<MoreUnitResult>[]
-    type: 'bad-length' | UnitResultType
+    type: 'invalid' | 'bad-length' | UnitResultType
   }
 }
 
@@ -51,11 +53,23 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
   const handleInput =
     variation.handleInput ??
-    function (input, state: Wordle.WordleState<WordType>, session, ctx) {
+    async function (input, state: Wordle.WordleState<WordType>, session, ctx) {
       const unitResults: Wordle.UnitResult<MoreUnitResult>[] = []
       if (input.length !== state.currentWord.length) {
         return { unitResults, type: 'bad-length' }
       }
+      // check if word is in the word list
+      if (variation.validWords) {
+        if (!variation.validWords.includes(input as unknown as WordType)) {
+          return { unitResults, type: 'invalid' }
+        }
+      }
+      if (variation.validateWord) {
+        if (!(await variation.validateWord(input.split('') as unknown as WordType[], session, ctx))) {
+          return { unitResults, type: 'invalid' }
+        }
+      }
+
       const currentWord = [...state.currentWord]
       const guessedWords = state.guessedWords ?? []
       const guessedCount = state.guessedCount ?? 0
@@ -108,7 +122,15 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
         }
         if (state?.state === Wordle.GameState.Started) {
           if (word) {
-            handleInput(word, state, session, ctx)
+            const result = await handleInput(word, state, session, ctx)
+            switch (result.type) {
+              case 'bad-length':
+                return session?.text('wordle.messages.bad-length')
+              case 'invalid':
+                return session?.text('wordle.messages.invalid')
+              case 'correct':
+                return session?.text('wordlw.messages.correct')
+            }
           } else {
             return session?.text('wordle.messages.started', [command.name])
           }
