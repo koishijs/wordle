@@ -107,6 +107,14 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
   return class {
     _variation = variation
+    // re-export koishi fields
+    name = variation.name
+    static Config = variation.Config
+    static schema = variation.schema
+    static using = variation.using
+    static reusable = variation.reusable
+    static reactive = variation.reactive
+
     constructor(ctx: Context) {
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
