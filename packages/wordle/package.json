@@ -1,18 +1,22 @@
 {
   "name": "koishi-plugin-wordle",
   "description": "Play wordle in Koishi",
-  "version": "1.0.0",
+  "version": "0.0.1-alpha.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
     "lib",
     "dist"
   ],
-  "author": "Seidko <seidko.coding@gmail.com>",
+  "author": {
+    "name": "Maiko Tan",
+    "email": "maiko.tan.coding@gmail.com",
+    "url": "https://github.com/MaikoTan"
+  },
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/koishijs/koishi-plugin-wordle.git",
+    "url": "git+https://github.com/koishijs/wordle.git",
     "directory": "packages/wordle"
   },
   "bugs": {
