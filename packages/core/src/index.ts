@@ -26,7 +26,7 @@ export namespace Wordle {
     Ended = 'ended',
   }
 
-  export interface WordleState<WordType = string> {
+  export interface WordleState<WordType extends any[] = string[]> {
     state: GameState
     currentWord: WordType
     guessedWords?: WordType[]
@@ -35,8 +35,9 @@ export namespace Wordle {
 
   export type UnitResultType = 'correct' | 'bad-position' | 'incorrect'
 
-  export interface UnitResult<MoreUnitResult> {
+  export interface UnitResult<MoreUnitResult, WordType extends any[] = string[]> {
     type: UnitResultType | MoreUnitResult
+    char: WordType[number]
   }
 
   export interface VarificatedResult<MoreUnitResult = string> {
@@ -60,7 +61,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       }
       // check if word is in the word list
       if (variation.validWords) {
-        if (!variation.validWords.includes(input as unknown as WordType)) {
+        if (!variation.validWords.some((word) => word.join('') === input)) {
           return { unitResults, type: 'invalid' }
         }
       }
@@ -76,12 +77,12 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       for (let i = 0; i < input.length; i++) {
         const char = input[i]
         if (char === currentWord[i]) {
-          unitResults.push({ type: 'correct' })
+          unitResults.push({ type: 'correct', char })
           currentWord[i] = ''
-        } else if (currentWord.includes(char)) {
-          unitResults.push({ type: 'bad-position' })
+        } else if (currentWord.some(char => char === input[i])) {
+          unitResults.push({ type: 'bad-position', char })
         } else {
-          unitResults.push({ type: 'incorrect' })
+          unitResults.push({ type: 'incorrect', char })
         }
       }
       if (unitResults.every((result) => result.type === 'correct')) {
@@ -137,7 +138,9 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
               case 'invalid':
                 return session?.text('wordle.messages.invalid')
               case 'correct':
-                return session?.text('wordlw.messages.correct')
+                return session?.text('wordle.messages.correct')
+              case 'incorrect':
+                return this.formatTable(result.unitResults, state.guessedWords ?? [])
             }
           } else {
             return session?.text('wordle.messages.started', [command.name])
@@ -153,6 +156,28 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
     getCurrentWord(session: Session, ctx: Context) {
       return variation.getCurrentWord(session, ctx)
+    }
+
+    formatTable(word: Wordle.UnitResult<any>[], guessedWords: any[]): string {
+      const lines: string[] = []
+      let line: string = ''
+      word.forEach((unit) => {
+        switch (unit.type) {
+          case 'correct':
+            line += (`[${unit.char}]`)
+            break
+          case 'bad-position':
+            line += (`(${unit.char})`)
+            break
+          case 'incorrect':
+            line += (` ${unit.char} `)
+            break
+        }
+      })
+
+      lines.push(line)
+
+      return lines.join('\n')
     }
   }
 }

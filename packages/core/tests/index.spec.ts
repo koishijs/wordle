@@ -31,6 +31,7 @@ describe('core', () => {
   app.i18n.define('zh', {
     wordle: {
       messages: {
+        'correct': 'correct',
         'invalid': 'not a word',
         'bad-length': 'bad length',
       },
@@ -43,5 +44,17 @@ describe('core', () => {
 
   it('should flag a wrong word', async () => {
     await client.shouldReply('wordle aaaaa', 'not a word')
+  })
+
+  it('should flag a word with wrong length', async () => {
+    await client.shouldReply('wordle h', 'bad length')
+  })
+
+  it('should output guessed words', async () => {
+    await client.shouldReply('wordle crown', /c {2}r \(o\) w {2}n/)
+  })
+
+  it('should output correct', async () => {
+    await client.shouldReply('wordle hello', 'correct')
   })
 })
