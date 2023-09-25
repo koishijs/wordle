@@ -15,10 +15,27 @@ describe('wordle', () => {
 
   const client = app.mock.client('123')
 
+  app.i18n.define('zh', {
+    wordle: {
+      messages: {
+        'correct': 'correct',
+        'invalid': 'not a word',
+        'bad-length': 'bad length',
+      },
+    },
+  })
+
   before(() => app.start())
   after(() => app.stop())
 
   it('get today wordle', async () => {
     await client.shouldReply('wordle')
+  })
+
+  it('should process wordle gaming', async () => {
+    await client.shouldReply('wordle aaaaa', 'not a word')
+    await client.shouldReply('wordle h', 'bad length')
+    await client.shouldReply('wordle crown', /c {2}r \(o\) w {2}n/)
+    await client.shouldReply('wordle hello', 'correct')
   })
 })
