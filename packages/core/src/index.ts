@@ -1,12 +1,13 @@
-import { Command, Context, Plugin, Session } from 'koishi'
+import { Argv, Command, Context, Plugin, Session } from 'koishi'
 
 export interface WordleVariation<WordType extends any[] = string[], MoreUnitResult = WordType[number]>
   extends Omit<Plugin.Object, 'apply'> {
   command: string | Command
+  locales?: Record<string, any>
   guessCount?: number
   possibleUnitResults?: readonly MoreUnitResult[]
   init?: (command: Command, ctx: Context) => void
-  getCurrentWord: (session: Session, ctx: Context) => Promise<WordType>
+  getCurrentWord: (argv: Argv, ctx: Context) => Promise<WordType>
   validWords?: WordType[]
   validateWord?: (word: WordType[], session: Session, ctx: Context) => Promise<boolean>
   // Game logic and lifecycle
@@ -116,10 +117,17 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
       ctx.i18n.define('zh', require('./locales/zh-CN'))
 
+      if (variation.locales) {
+        Object.entries(variation.locales).forEach(([locale, data]) => {
+          ctx.i18n.define(locale, data)
+        })
+      }
+
       command = typeof variation.command === 'string' ? ctx.command(variation.command) : variation.command
       variation.init?.(command, ctx)
 
-      command.action(async ({ session }, word) => {
+      command.action(async (argv, word) => {
+        const { session } = argv
         const state = sessionState.get(`${session.guildId}.${session.channelId}`)
         if (state?.state !== Wordle.GameState.Active && word) {
           return session?.text('wordle.messages.not-started', [command.name])
@@ -157,15 +165,15 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
         } else {
           // start a new game
           variation.onGameStart?.(session, ctx)
-          const currentWord = await this.getCurrentWord(session, ctx)
+          const currentWord = await this.getCurrentWord(argv, ctx)
           sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Active, currentWord })
           await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount ?? 6]))
         }
       })
     }
 
-    getCurrentWord(session: Session, ctx: Context) {
-      return variation.getCurrentWord(session, ctx)
+    getCurrentWord(argv: Argv, ctx: Context) {
+      return variation.getCurrentWord(argv, ctx)
     }
 
     formatTable(word: Wordle.UnitResult<any>[], guessedWords: Wordle.VerificatedResult[], session: Session): string {
