@@ -9,8 +9,9 @@ wordle:
     bad-length: 单词长度不匹配，请重新输入。
     invalid: 该单词不存在或不属于合法单词，请重新输入。
     text-hint: |
+
       ==========
 
-      [n]\t\t位置正确
-      (n)\t\t存在字母 n 但位置错误
-       n \t\t不存在字母 n
+      [n]&emsp;位置正确
+      (n)&emsp;存在字母 n 但位置错误
+       n &emsp;不存在字母 n

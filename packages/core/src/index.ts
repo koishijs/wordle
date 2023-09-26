@@ -178,8 +178,8 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
     formatTable(word: Wordle.UnitResult<any>[], guessedWords: Wordle.VerificatedResult[], session: Session): string {
       const lines: string[] = []
-      let line: string = ''
       ;[...guessedWords.map((item) => item.unitResults), word].forEach((result) => {
+        let line: string = ''
         result.forEach((unit) => {
           switch (unit.type) {
             case 'correct':
