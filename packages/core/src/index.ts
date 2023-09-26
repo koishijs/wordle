@@ -17,7 +17,7 @@ export interface WordleVariation<WordType extends any[] = string[], MoreUnitResu
     state: Wordle.WordleState<WordType>,
     session: Session,
     ctx: Context,
-  ) => Promise<Wordle.VarificatedResult<MoreUnitResult>>
+  ) => Promise<Wordle.VerificatedResult<MoreUnitResult>>
 }
 
 export namespace Wordle {
@@ -28,7 +28,7 @@ export namespace Wordle {
   export interface WordleState<WordType extends any[] = string[]> {
     state?: GameState
     currentWord: WordType
-    guessedWords?: WordType[]
+    guessedWords?: VerificatedResult<any>[]
     guessedCount?: number
   }
 
@@ -39,7 +39,7 @@ export namespace Wordle {
     char: WordType[number]
   }
 
-  export interface VarificatedResult<MoreUnitResult = string> {
+  export interface VerificatedResult<MoreUnitResult = string> {
     unitResults: UnitResult<MoreUnitResult>[]
     type: 'invalid' | 'bad-length' | UnitResultType
   }
@@ -86,11 +86,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       }
       if (unitResults.every((result) => result.type === 'correct')) {
         // game ended
-        sessionState.set(`${session.guildId}.${session.channelId}`, {
-          currentWord: state.currentWord,
-          guessedWords: [...guessedWords, input as unknown as WordType],
-          guessedCount: guessedCount + 1,
-        })
+        sessionState.delete(`${session.guildId}.${session.channelId}`)
         variation.onGameEnd?.(session, ctx)
         state.state = undefined
         return { unitResults, type: 'correct' }
@@ -98,7 +94,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
         sessionState.set(`${session.guildId}.${session.channelId}`, {
           state: Wordle.GameState.Active,
           currentWord: state.currentWord,
-          guessedWords: [...guessedWords, input as unknown as WordType],
+          guessedWords: [...guessedWords, { unitResults, type: 'incorrect' }],
           guessedCount: guessedCount + 1,
         })
         return { unitResults, type: 'incorrect' }
@@ -131,15 +127,29 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
         if (state?.state === Wordle.GameState.Active) {
           if (word) {
             const result = await handleInput(word, state, session, ctx)
+            let text = ''
             switch (result.type) {
               case 'bad-length':
-                return session?.text('wordle.messages.bad-length')
+                text = session?.text('wordle.messages.bad-length')
+                break
               case 'invalid':
-                return session?.text('wordle.messages.invalid')
+                text = session?.text('wordle.messages.invalid')
+                break
               case 'correct':
-                return session?.text('wordle.messages.correct')
+                text = session?.text('wordle.messages.correct')
+                break
               case 'incorrect':
-                return this.formatTable(result.unitResults, state.guessedWords ?? [])
+                text = this.formatTable(result.unitResults, state.guessedWords ?? [], session)
+                state.guessedWords = [...(state.guessedWords ?? []), result]
+                break
+            }
+
+            await session.send(text)
+
+            if (state.guessedCount >= variation.guessCount ?? 6) {
+              await session.send(session?.text('wordle.messages.game-over', [command.name, state.currentWord.join('')]))
+              variation.onGameEnd?.(session, ctx)
+              sessionState.delete(`${session.guildId}.${session.channelId}`)
             }
           } else {
             return session?.text('wordle.messages.no-input')
@@ -158,24 +168,27 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       return variation.getCurrentWord(session, ctx)
     }
 
-    formatTable(word: Wordle.UnitResult<any>[], guessedWords: any[]): string {
+    formatTable(word: Wordle.UnitResult<any>[], guessedWords: Wordle.VerificatedResult[], session: Session): string {
       const lines: string[] = []
       let line: string = ''
-      word.forEach((unit) => {
-        switch (unit.type) {
-          case 'correct':
-            line += (`[${unit.char}]`)
-            break
-          case 'bad-position':
-            line += (`(${unit.char})`)
-            break
-          case 'incorrect':
-            line += (` ${unit.char} `)
-            break
-        }
-      })
+      ;[guessedWords, word].forEach((result) => {
+        result.forEach((unit) => {
+          switch (unit.type) {
+            case 'correct':
+              line += (`[${unit.char}]`)
+              break
+            case 'bad-position':
+              line += (`(${unit.char})`)
+              break
+            case 'incorrect':
+              line += (` ${unit.char} `)
+              break
+          }
+        })
 
-      lines.push(line)
+        lines.push(line)
+      })
+      lines.push(session.text('wordle.messages.text-hint'))
 
       return lines.join('\n')
     }
