@@ -12,9 +12,6 @@ export default defineVariation({
     const { solution } = await ctx.http.get<NYTimesWordleResponse>(`https://www.nytimes.com/svc/wordle/v2/${date}.json`)
     return solution.split('')
   },
-  async onGameStart(session, ctx) {
-    session.send('game started')
-  },
 })
 
 export interface NYTimesWordleResponse {

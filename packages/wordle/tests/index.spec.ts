@@ -18,6 +18,7 @@ describe('wordle', () => {
   app.i18n.define('zh', {
     wordle: {
       messages: {
+        'game-started': 'game-started',
         'correct': 'correct',
         'invalid': 'not a word',
         'bad-length': 'bad length',
@@ -29,7 +30,7 @@ describe('wordle', () => {
   after(() => app.stop())
 
   it('get today wordle', async () => {
-    await client.shouldReply('wordle')
+    await client.shouldReply('wordle', 'game-started')
   })
 
   it('should process wordle gaming', async () => {

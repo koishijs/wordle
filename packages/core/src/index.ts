@@ -3,6 +3,7 @@ import { Command, Context, Plugin, Session } from 'koishi'
 export interface WordleVariation<WordType extends any[] = string[], MoreUnitResult = WordType[number]>
   extends Omit<Plugin.Object, 'apply'> {
   command: string | Command
+  guessCount?: number
   possibleUnitResults?: readonly MoreUnitResult[]
   init?: (command: Command, ctx: Context) => void
   getCurrentWord: (session: Session, ctx: Context) => Promise<WordType>
@@ -21,13 +22,11 @@ export interface WordleVariation<WordType extends any[] = string[], MoreUnitResu
 
 export namespace Wordle {
   export enum GameState {
-    NotStarted = 'not-started',
-    Started = 'started',
-    Ended = 'ended',
+    Active = 'active',
   }
 
   export interface WordleState<WordType extends any[] = string[]> {
-    state: GameState
+    state?: GameState
     currentWord: WordType
     guessedWords?: WordType[]
     guessedCount?: number
@@ -88,16 +87,16 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       if (unitResults.every((result) => result.type === 'correct')) {
         // game ended
         sessionState.set(`${session.guildId}.${session.channelId}`, {
-          state: Wordle.GameState.Ended,
           currentWord: state.currentWord,
           guessedWords: [...guessedWords, input as unknown as WordType],
           guessedCount: guessedCount + 1,
         })
         variation.onGameEnd?.(session, ctx)
+        state.state = undefined
         return { unitResults, type: 'correct' }
       } else {
         sessionState.set(`${session.guildId}.${session.channelId}`, {
-          state: Wordle.GameState.Started,
+          state: Wordle.GameState.Active,
           currentWord: state.currentWord,
           guessedWords: [...guessedWords, input as unknown as WordType],
           guessedCount: guessedCount + 1,
@@ -126,10 +125,10 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
       command.action(async ({ session }, word) => {
         const state = sessionState.get(`${session.guildId}.${session.channelId}`)
-        if ((!state || state?.state === Wordle.GameState.NotStarted) && word) {
+        if (state?.state !== Wordle.GameState.Active && word) {
           return session?.text('wordle.messages.not-started', [command.name])
         }
-        if (state?.state === Wordle.GameState.Started) {
+        if (state?.state === Wordle.GameState.Active) {
           if (word) {
             const result = await handleInput(word, state, session, ctx)
             switch (result.type) {
@@ -143,13 +142,14 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
                 return this.formatTable(result.unitResults, state.guessedWords ?? [])
             }
           } else {
-            return session?.text('wordle.messages.started', [command.name])
+            return session?.text('wordle.messages.no-input')
           }
         } else {
           // start a new game
           variation.onGameStart?.(session, ctx)
           const currentWord = await this.getCurrentWord(session, ctx)
-          sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Started, currentWord })
+          sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Active, currentWord })
+          await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount ?? 6]))
         }
       })
     }

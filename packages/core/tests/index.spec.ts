@@ -14,9 +14,6 @@ describe('core', () => {
       name: 'wordle-core-test',
       command: 'wordle',
       validWords: ['hello', 'crown', 'panic', 'index', 'leben'].map((word) => word.split('')),
-      async onGameStart(session, ctx) {
-        session.send('game started')
-      },
       async getCurrentWord(session, ctx) {
         return 'hello'.split('')
       },
@@ -31,6 +28,7 @@ describe('core', () => {
   app.i18n.define('zh', {
     wordle: {
       messages: {
+        'game-started': 'game-started',
         'correct': 'correct',
         'invalid': 'not a word',
         'bad-length': 'bad length',
@@ -39,7 +37,7 @@ describe('core', () => {
   })
 
   it('should start a game', async () => {
-    await client.shouldReply('wordle', 'game started')
+    await client.shouldReply('wordle', 'game-started')
   })
 
   it('should flag a wrong word', async () => {
