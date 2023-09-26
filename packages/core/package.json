@@ -1,7 +1,7 @@
 {
   "name": "@koishijs/wordle",
   "description": "Wordle core for Koishi",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -13,9 +13,6 @@
     "email": "maiko.tan.coding@gmail.com",
     "url": "https://github.com/MaikoTan"
   },
-  "maintainers": [
-    "Seidko <seidko.coding@gmail.com>"
-  ],
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
