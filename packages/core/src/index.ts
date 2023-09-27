@@ -72,32 +72,20 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       }
 
       const currentWord = [...state.currentWord]
-      const guessedWords = state.guessedWords ?? []
-      const guessedCount = state.guessedCount ?? 0
       for (let i = 0; i < input.length; i++) {
         const char = input[i]
         if (char === currentWord[i]) {
           unitResults.push({ type: 'correct', char })
           currentWord[i] = ''
-        } else if (currentWord.some(char => char === input[i])) {
+        } else if (currentWord.some((char) => char === input[i])) {
           unitResults.push({ type: 'bad-position', char })
         } else {
           unitResults.push({ type: 'incorrect', char })
         }
       }
       if (unitResults.every((result) => result.type === 'correct')) {
-        // game ended
-        sessionState.delete(`${session.guildId}.${session.channelId}`)
-        variation.onGameEnd?.(session, ctx)
-        state.state = undefined
         return { unitResults, type: 'correct' }
       } else {
-        sessionState.set(`${session.guildId}.${session.channelId}`, {
-          state: Wordle.GameState.Active,
-          currentWord: state.currentWord,
-          guessedWords: [...guessedWords, { unitResults, type: 'incorrect' }],
-          guessedCount: guessedCount + 1,
-        })
         return { unitResults, type: 'incorrect' }
       }
     }
@@ -154,10 +142,22 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
             await session.send(text)
 
-            if (state.guessedCount >= variation.guessCount ?? 6) {
+            if (result.type === 'correct') {
+              // game ended
+              sessionState.delete(`${session.guildId}.${session.channelId}`)
+              variation.onGameEnd?.(session, ctx)
+              state.state = undefined
+            } else if (state.guessedCount >= variation.guessCount ?? 6) {
               await session.send(session?.text('wordle.messages.game-over', [command.name, state.currentWord.join('')]))
               variation.onGameEnd?.(session, ctx)
               sessionState.delete(`${session.guildId}.${session.channelId}`)
+            } else {
+              sessionState.set(`${session.guildId}.${session.channelId}`, {
+                state: Wordle.GameState.Active,
+                currentWord: state.currentWord,
+                guessedWords: [...(state.guessedWords ?? []), { unitResults: result.unitResults, type: 'incorrect' }],
+                guessedCount: state.guessedCount + 1,
+              })
             }
           } else {
             return session?.text('wordle.messages.no-input')
@@ -183,13 +183,13 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
         result.forEach((unit) => {
           switch (unit.type) {
             case 'correct':
-              line += (`[${unit.char}]`)
+              line += `[${unit.char}]`
               break
             case 'bad-position':
-              line += (`(${unit.char})`)
+              line += `(${unit.char})`
               break
             case 'incorrect':
-              line += (` ${unit.char} `)
+              line += ` ${unit.char} `
               break
           }
         })
