@@ -4,3 +4,6 @@ commands:
 
     options:
       random: 随机选取单词
+
+    messages:
+      fallback-to-random: 尝试从 NYTimes 获取今日单词失败，将随机选取单词。

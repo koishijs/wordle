@@ -2,6 +2,10 @@ import { defineVariation } from '@koishijs/wordle'
 
 import wordlist from './data/wordlist.json'
 
+function getRandomWord() {
+  return wordlist[Math.floor(Math.random() * wordlist.length)]
+}
+
 export default defineVariation({
   name: 'koishi-plugin-wordle',
   command: 'wordle',
@@ -13,14 +17,23 @@ export default defineVariation({
   init(command, ctx) {
     command.option('random', '-r')
   },
-  async getCurrentWord({ options }, ctx) {
+  async getCurrentWord({ options, session }, ctx) {
     if ((options as any).random) {
-      return wordlist[Math.floor(Math.random() * wordlist.length)].split('')
+      return getRandomWord().split('')
     }
     // get today's wordle from New York Times
     const date = new Date().toISOString().slice(0, 10)
-    const { solution } = await ctx.http.get<NYTimesWordleResponse>(`https://www.nytimes.com/svc/wordle/v2/${date}.json`)
-    return solution.split('')
+    try {
+      const { solution } = await ctx.http.get<NYTimesWordleResponse>(
+        `https://www.nytimes.com/svc/wordle/v2/${date}.json`,
+      )
+      return solution.split('')
+    } catch (err) {
+      // NYTimes is not accessible in China and some other regions,
+      // so we fallback to a random word
+      await session.send(session.text('.fallback-to-random'))
+      return getRandomWord().split('')
+    }
   },
 })
 
