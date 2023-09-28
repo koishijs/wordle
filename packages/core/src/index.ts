@@ -136,7 +136,6 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
                 break
               case 'incorrect':
                 text = this.formatTable(result.unitResults, state.guessedWords ?? [], session)
-                state.guessedWords = [...(state.guessedWords ?? []), result]
                 break
             }
 
@@ -151,11 +150,11 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
               await session.send(session?.text('wordle.messages.game-over', [command.name, state.currentWord.join('')]))
               variation.onGameEnd?.(session, ctx)
               sessionState.delete(`${session.guildId}.${session.channelId}`)
-            } else {
+            } else if (result.type === 'incorrect') {
               sessionState.set(`${session.guildId}.${session.channelId}`, {
                 state: Wordle.GameState.Active,
                 currentWord: state.currentWord,
-                guessedWords: [...(state.guessedWords ?? []), { unitResults: result.unitResults, type: 'incorrect' }],
+                guessedWords: [...(state.guessedWords ?? []), result],
                 guessedCount: state.guessedCount + 1,
               })
             }
