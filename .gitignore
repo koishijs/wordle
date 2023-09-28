@@ -19,6 +19,11 @@ tsconfig.tsbuildinfo
 *.njsproj
 *.sln
 
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
 .yarn/*
 !.yarn/patches
 !.yarn/releases
