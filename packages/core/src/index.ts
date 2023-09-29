@@ -113,10 +113,20 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
       command = typeof variation.command === 'string' ? ctx.command(variation.command) : variation.command
       variation.init?.(command, ctx)
+      command.option('exit', '-e')
 
       command.action(async (argv, word) => {
         const { session } = argv
         const state = sessionState.get(`${session.guildId}.${session.channelId}`)
+        if ((argv.options as any).end) {
+          if (state?.state !== Wordle.GameState.Active) {
+            return session?.text('wordle.messages.not-started', [command.name])
+          }
+          sessionState.delete(`${session.guildId}.${session.channelId}`)
+          variation.onGameEnd?.(session, ctx)
+          return session?.text('wordle.messages.game-ended', [command.name, state.currentWord.join('')])
+        }
+
         if (state?.state !== Wordle.GameState.Active && word) {
           return session?.text('wordle.messages.not-started', [command.name])
         }

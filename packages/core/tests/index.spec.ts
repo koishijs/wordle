@@ -29,6 +29,7 @@ describe('core', () => {
     wordle: {
       messages: {
         'game-started': 'game-started',
+        'game-ended': 'game-ended',
         'correct': 'correct',
         'invalid': 'not a word',
         'bad-length': 'bad length',
@@ -54,5 +55,10 @@ describe('core', () => {
 
   it('should output correct', async () => {
     await client.shouldReply('wordle hello', 'correct')
+  })
+
+  it('should exit the game', async () => {
+    await client.shouldReply('wordle', 'game-started')
+    await client.shouldReply('wordle --exit', 'game-ended')
   })
 })
