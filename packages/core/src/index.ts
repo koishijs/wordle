@@ -1,4 +1,5 @@
-import { Argv, Command, Context, Plugin, Session } from 'koishi'
+import { Argv, Command, Context, Element, h, Plugin, Session } from 'koishi'
+import {} from 'koishi-plugin-puppeteer'
 
 export interface WordleVariation<WordType extends any[] = string[], MoreUnitResult = WordType[number]>
   extends Omit<Plugin.Object, 'apply'> {
@@ -100,7 +101,10 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
     static reusable = variation.reusable
     static reactive = variation.reactive
 
+    ctx: Context
+
     constructor(ctx: Context) {
+      this.ctx = ctx
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
       ctx.i18n.define('zh', require('./locales/zh-CN'))
@@ -123,7 +127,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
         if (state?.state === Wordle.GameState.Active) {
           if (word) {
             const result = await handleInput(word, state, session, ctx)
-            let text = ''
+            let text: string | Element = ''
             switch (result.type) {
               case 'bad-length':
                 text = session?.text('wordle.messages.bad-length')
@@ -135,7 +139,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
                 text = session?.text('wordle.messages.correct')
                 break
               case 'incorrect':
-                text = this.formatTable(result.unitResults, state.guessedWords ?? [], session)
+                text = await this.formatTable(result.unitResults, state.guessedWords ?? [], session)
                 break
             }
 
@@ -175,29 +179,38 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       return variation.getCurrentWord(argv, ctx)
     }
 
-    formatTable(word: Wordle.UnitResult<any>[], guessedWords: Wordle.VerificatedResult[], session: Session): string {
+    async formatTable(
+      word: Wordle.UnitResult<any>[],
+      guessedWords: Wordle.VerificatedResult[],
+      session: Session,
+    ): Promise<string | Element> {
       const lines: string[] = []
-      ;[...guessedWords.map((item) => item.unitResults), word].forEach((result) => {
-        let line: string = ''
-        result.forEach((unit) => {
-          switch (unit.type) {
-            case 'correct':
-              line += `[${unit.char}]`
-              break
-            case 'bad-position':
-              line += `(${unit.char})`
-              break
-            case 'incorrect':
-              line += ` ${unit.char} `
-              break
-          }
+
+      if (this.ctx.puppeteer) {
+        return h('html', [])
+      } else {
+        ;;[...guessedWords.map((item) => item.unitResults), word].forEach((result) => {
+          let line: string = ''
+          result.forEach((unit) => {
+            switch (unit.type) {
+              case 'correct':
+                line += `[${unit.char}]`
+                break
+              case 'bad-position':
+                line += `(${unit.char})`
+                break
+              case 'incorrect':
+                line += ` ${unit.char} `
+                break
+            }
+          })
+
+          lines.push(line)
         })
+        lines.push(session.text('wordle.messages.text-hint'))
 
-        lines.push(line)
-      })
-      lines.push(session.text('wordle.messages.text-hint'))
-
-      return lines.join('\n')
+        return lines.join('\n')
+      }
     }
   }
 }
