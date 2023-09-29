@@ -1,4 +1,4 @@
-import { Argv, Command, Context, Element, h, Plugin, Session } from 'koishi'
+import { Argv, Command, Context, Element, Plugin, Session } from 'koishi'
 import {} from 'koishi-plugin-puppeteer'
 
 export interface WordleVariation<WordType extends any[] = string[], MoreUnitResult = WordType[number]>
@@ -187,9 +187,32 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       const lines: string[] = []
 
       if (this.ctx.puppeteer) {
-        return h('html', [])
+        return (
+          <html
+            width='370px'
+            // eslint-disable-next-line max-len
+            style='font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,"Segoe UI",Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"; font-size: 20px; padding: 20px;'
+          >
+            <h1 style='text-align: center'>{command.name}</h1>
+            <div style='width: 100%'>
+              {...[...guessedWords.map((item) => item.unitResults), word].map((items) => (
+                <div style='width: 100%; display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 5px'>
+                  {items.map((item) => (
+                    <span
+                      style={`margin-top: 5px; display: flex; justify-content: center; align-items: center; color: white; background-color: ${
+                        item.type === 'correct' ? '#538d4e' : item.type === 'bad-position' ? '#b59f3b' : '#3a3a3c'
+                      }`}
+                    >
+                      {item.char}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </html>
+        )
       } else {
-        ;;[...guessedWords.map((item) => item.unitResults), word].forEach((result) => {
+        ;[...guessedWords.map((item) => item.unitResults), word].forEach((result) => {
           let line: string = ''
           result.forEach((unit) => {
             switch (unit.type) {
