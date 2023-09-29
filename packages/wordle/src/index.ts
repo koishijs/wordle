@@ -26,11 +26,15 @@ export default defineVariation({
     try {
       const { solution } = await ctx.http.get<NYTimesWordleResponse>(
         `https://www.nytimes.com/svc/wordle/v2/${date}.json`,
+        {
+          // In case of network error, we fallback to a random word.
+          timeout: 5000,
+        },
       )
       return solution.split('')
     } catch (err) {
       // NYTimes is not accessible in China and some other regions,
-      // so we fallback to a random word
+      // so we fallback to a random word.
       await session.send(session.text('.fallback-to-random'))
       return getRandomWord().split('')
     }
