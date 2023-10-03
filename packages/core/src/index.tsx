@@ -198,34 +198,47 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
 
       if (this.ctx.puppeteer) {
         return (
-          <html
-            style={{
-              fontFamily:
-                // eslint-disable-next-line max-len
-                'system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,"Segoe UI",Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"',
-              fontSize: '24px',
-              fontWeight: 'bold',
-              width: '370px',
-            }}
-          >
+          <html>
             <div>
-              <h1 style={{ textAlign: 'center' }}>{command.name}</h1>
-              <div style={{ width: '100%', padding: '20px' }}>
-                {...[...guessedWords.map((item) => item.unitResults), word].map((items) => (
+              <style>{`
+                * {
+                  margin: 0;
+                  padding: 0;
+                  box-sizing: border-box;
+                }
+                body {
+                  width: 400px;
+                  padding: 20px;
+                  font-family:
+                    -apple-system, "Microsoft Yahei", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+                  font-size: '24px';
+                  font-weight: 'bold';
+                }
+              `}</style>
+              <h1 style={{ textAlign: 'center', fontSize: '68px' }}>{command.name}</h1>
+              <div style={{ width: '100%' }}>
+                {[...guessedWords.map((item) => item.unitResults), word].map((items) => (
                   <div
-                    style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridGap: '5px' }}
+                    style={{
+                      marginTop: '5px',
+                      width: '100%',
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(5, 1fr)',
+                      gridGap: '5px',
+                    }}
                   >
                     {items.map((item) => (
                       <span
                         style={{
-                          marginTop: '5px',
+                          fontSize: '52px',
+                          width: '100%',
                           aspectRatio: '1/1',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
                           color: 'white',
                           backgroundColor:
-                            item.type === 'correct' ? '#538d4e' : item.type === 'bad-position' ? '#b59f3b' : '#3a3a3c',
+                            item.type === 'correct' ? '#6aaa64' : item.type === 'bad-position' ? '#c9b458' : '#787c7e',
                         }}
                       >
                         {item.char}
@@ -234,21 +247,27 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
                   </div>
                 ))}
 
-                {new Array((this._variation.guessCount ?? 6) - guessedWords.length).map(() => (
+                {Array.from({ length: (this._variation.guessCount ?? 6) - guessedWords.length - 1 }).map(() => (
                   <div
-                    style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridGap: '5px' }}
+                    style={{
+                      marginTop: '5px',
+                      width: '100%',
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(5, 1fr)',
+                      gridGap: '5px',
+                    }}
                   >
-                    {new Array(word.length).fill(0).map(() => (
+                    {Array.from({ length: word.length }).map(() => (
                       <span
                         style={{
-                          marginTop: '5px',
-                          aspectRatio: '1/1',
                           display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
+                          width: '100%',
+                          aspectRatio: '1/1',
                           border: '2px solid #3a3a3c',
                         }}
-                      />
+                      >
+                        &nbsp;
+                      </span>
                     ))}
                   </div>
                 ))}
