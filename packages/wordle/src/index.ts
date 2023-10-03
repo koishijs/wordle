@@ -10,7 +10,6 @@ export default defineVariation({
   name: 'koishi-plugin-wordle',
   command: 'wordle',
   locales: {
-    'zh': require('./locales/zh-CN'),
     'zh-CN': require('./locales/zh-CN'),
   },
   validWords: wordlist.map((word: string) => word.split('')),
