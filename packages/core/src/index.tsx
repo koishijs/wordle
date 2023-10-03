@@ -204,48 +204,55 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
                 // eslint-disable-next-line max-len
                 'system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,"Segoe UI",Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"',
               fontSize: '24px',
+              fontWeight: 'bold',
               width: '370px',
             }}
           >
-            <h1 style={{ textAlign: 'center' }}>{command.name}</h1>
-            <div style={{ width: '100%', padding: '20px' }}>
-              {...[...guessedWords.map((item) => item.unitResults), word].map((items) => (
-                <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridGap: '5px' }}>
-                  {items.map((item) => (
-                    <span
-                      style={{
-                        marginTop: '5px',
-                        aspectRatio: '1/1',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        color: 'white',
-                        backgroundColor:
-                          item.type === 'correct' ? '#538d4e' : item.type === 'bad-position' ? '#b59f3b' : '#3a3a3c',
-                      }}
-                    >
-                      {item.char}
-                    </span>
-                  ))}
-                </div>
-              ))}
+            <div>
+              <h1 style={{ textAlign: 'center' }}>{command.name}</h1>
+              <div style={{ width: '100%', padding: '20px' }}>
+                {...[...guessedWords.map((item) => item.unitResults), word].map((items) => (
+                  <div
+                    style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridGap: '5px' }}
+                  >
+                    {items.map((item) => (
+                      <span
+                        style={{
+                          marginTop: '5px',
+                          aspectRatio: '1/1',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          color: 'white',
+                          backgroundColor:
+                            item.type === 'correct' ? '#538d4e' : item.type === 'bad-position' ? '#b59f3b' : '#3a3a3c',
+                        }}
+                      >
+                        {item.char}
+                      </span>
+                    ))}
+                  </div>
+                ))}
 
-              {new Array((this._variation.guessCount ?? 6) - guessedWords.length).map(() => (
-                <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridGap: '5px' }}>
-                  {new Array(word.length).fill(0).map(() => (
-                    <span
-                      style={{
-                        marginTop: '5px',
-                        aspectRatio: '1/1',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        border: '2px solid #3a3a3c',
-                      }}
-                    />
-                  ))}
-                </div>
-              ))}
+                {new Array((this._variation.guessCount ?? 6) - guessedWords.length).map(() => (
+                  <div
+                    style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gridGap: '5px' }}
+                  >
+                    {new Array(word.length).fill(0).map(() => (
+                      <span
+                        style={{
+                          marginTop: '5px',
+                          aspectRatio: '1/1',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          border: '2px solid #3a3a3c',
+                        }}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </html>
         )
