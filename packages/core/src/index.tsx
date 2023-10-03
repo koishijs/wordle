@@ -101,10 +101,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
     static reusable = variation.reusable
     static reactive = variation.reactive
 
-    public ctx: Context
-
-    constructor(ctx: Context) {
-      this.ctx = ctx
+    constructor(public ctx: Context) {
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
       ctx.i18n.define('zh', require('./locales/zh-CN'))
