@@ -101,7 +101,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
     static reusable = variation.reusable
     static reactive = variation.reactive
 
-    ctx: Context
+    public ctx: Context
 
     constructor(ctx: Context) {
       this.ctx = ctx
