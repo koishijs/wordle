@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  lint:
+  test:
     strategy:
       matrix:
         version: [16, 18, 20]
