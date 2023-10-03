@@ -1,7 +1,7 @@
 {
   "name": "@koishijs/wordle",
   "description": "Wordle core for Koishi",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -32,10 +32,7 @@
     "game"
   ],
   "peerDependencies": {
-    "koishi": "^4.11.0"
-  },
-  "devDependencies": {
-    "koishi": "^4.14.5",
+    "koishi": "^4.11.0",
     "koishi-plugin-puppeteer": "^3.5.0"
   }
 }
