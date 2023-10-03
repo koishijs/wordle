@@ -215,7 +215,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
                   font-weight: 'bold';
                 }
               `}</style>
-              <h1 style={{ textAlign: 'center', fontSize: '68px' }}>{command.name}</h1>
+              <h1 style={{ textAlign: 'center', fontSize: '68px', textTransform: 'uppercase' }}>{command.name}</h1>
               <div style={{ width: '100%' }}>
                 {[...guessedWords.map((item) => item.unitResults), word].map((items) => (
                   <div
@@ -231,6 +231,8 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
                       <span
                         style={{
                           fontSize: '52px',
+                          fontWeight: 'bold',
+                          textTransform: 'uppercase',
                           width: '100%',
                           aspectRatio: '1/1',
                           display: 'flex',
