@@ -1,14 +1,38 @@
 import { defineVariation } from '@koishijs/wordle'
+import { Schema } from 'koishi'
 
 import wordlist from './data/wordlist.json'
+
+export interface Config {
+  fallbackToRandom: boolean
+  timeout: number
+}
 
 function getRandomWord() {
   return wordlist[Math.floor(Math.random() * wordlist.length)]
 }
 
-export default defineVariation({
+export default defineVariation<Config>({
   name: 'koishi-plugin-wordle',
   command: 'wordle',
+  Config: Schema.intersect([
+    Schema.intersect([
+      Schema.object({
+        fallbackToRandom: Schema.boolean().default(true),
+      }),
+      Schema.union([
+        Schema.object({
+          fallbackToRandom: Schema.const(true),
+          timeout: Schema.number().default(5000),
+        }),
+        Schema.object({
+          fallbackToRandom: Schema.const(false),
+        }),
+      ]),
+    ]),
+  ]).i18n({
+    'zh-CN': require('./locales/schema.zh-CN'),
+  }) as Schema<Config>,
   locales: {
     'zh-CN': require('./locales/zh-CN'),
   },
@@ -16,7 +40,7 @@ export default defineVariation({
   init(command, ctx) {
     command.option('random', '-r')
   },
-  async getCurrentWord({ options, session }, ctx) {
+  async getCurrentWord({ options, session }, { ctx, config }) {
     if ((options as any).random) {
       return getRandomWord().split('')
     }
@@ -25,10 +49,12 @@ export default defineVariation({
     try {
       const { solution } = await ctx.http.get<NYTimesWordleResponse>(
         `https://www.nytimes.com/svc/wordle/v2/${date}.json`,
-        {
-          // In case of network error, we fallback to a random word.
-          timeout: 5000,
-        },
+        config.fallbackToRandom
+          ? {
+              // In case of network error, we fallback to a random word.
+              timeout: config.timeout,
+            }
+          : {},
       )
       return solution.split('')
     } catch (err) {
