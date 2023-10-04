@@ -1,24 +1,34 @@
-import { Argv, Command, Context, Element, Plugin, Session } from 'koishi'
+import { Argv, Command, Context, Element, Plugin, Session, Schema } from 'koishi'
 import {} from 'koishi-plugin-puppeteer'
 
-export interface WordleVariation<WordType extends any[] = string[], MoreUnitResult = WordType[number]>
-  extends Omit<Plugin.Object, 'apply'> {
+export interface VariationInstanceLike<T = any> {
+  ctx: Context
+  config: T
+}
+
+export interface WordleVariation<
+  Config = any,
+  ConfigSchema = Schema<Config>,
+  WordType extends any[] = string[],
+  MoreUnitResult = WordType[number],
+> extends Omit<Plugin.Object, 'Config' | 'apply'> {
   command: string | Command
+  Config: ConfigSchema
   locales?: Record<string, any>
   guessCount?: number
   possibleUnitResults?: readonly MoreUnitResult[]
-  init?: (command: Command, ctx: Context) => void
-  getCurrentWord: (argv: Argv, ctx: Context) => Promise<WordType>
+  init?: (command: Command, cls: VariationInstanceLike<Config>) => void
+  getCurrentWord: (argv: Argv, cls: VariationInstanceLike<Config>) => Promise<WordType>
   validWords?: WordType[]
-  validateWord?: (word: WordType[], session: Session, ctx: Context) => Promise<boolean>
+  validateWord?: (word: WordType[], argv: Argv, cls: VariationInstanceLike<Config>) => Promise<boolean>
   // Game logic and lifecycle
-  onGameStart?: (session: Session, ctx: Context) => Promise<void>
-  onGameEnd?: (session: Session, ctx: Context) => Promise<void>
+  onGameStart?: (argv: Argv, cls: VariationInstanceLike<Config>) => Promise<void>
+  onGameEnd?: (argv: Argv, ctx: Context) => Promise<void>
   handleInput?: <WordType extends any[] = string[]>(
     input: string,
     state: Wordle.WordleState<WordType>,
-    session: Session,
-    ctx: Context,
+    argv: Argv,
+    cls: VariationInstanceLike<Config>,
   ) => Promise<Wordle.VerificatedResult<MoreUnitResult>>
 }
 
@@ -47,9 +57,12 @@ export namespace Wordle {
   }
 }
 
-export function defineVariation<WordType extends any[] = string[], MoreUnitResult = string>(
-  variation: WordleVariation<WordType, MoreUnitResult>,
-): Plugin.Constructor {
+export function defineVariation<
+  Config = any,
+  ConfigSchema = Schema<Config>,
+  WordType extends any[] = string[],
+  MoreUnitResult = string,
+>(variation: WordleVariation<Config, ConfigSchema, WordType, MoreUnitResult>): Plugin.Constructor {
   let command: Command
   const sessionState = new Map<string, Wordle.WordleState<WordType>>()
 
@@ -101,7 +114,10 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
     static reusable = variation.reusable
     static reactive = variation.reactive
 
-    constructor(public ctx: Context) {
+    constructor(
+      public ctx: Context,
+      public config: Config,
+    ) {
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
 
@@ -112,7 +128,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
       }
 
       command = typeof variation.command === 'string' ? ctx.command(variation.command) : variation.command
-      variation.init?.(command, ctx)
+      variation.init?.(command, this)
       command.option('exit', '-e')
 
       command.action(async (argv, word) => {
@@ -123,7 +139,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
             return session?.text('wordle.messages.not-started', [command.name])
           }
           sessionState.delete(`${session.guildId}.${session.channelId}`)
-          variation.onGameEnd?.(session, ctx)
+          variation.onGameEnd?.(argv, ctx)
           return session?.text('wordle.messages.game-ended', [command.name, state.currentWord.join('')])
         }
 
@@ -132,7 +148,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
         }
         if (state?.state === Wordle.GameState.Active) {
           if (word) {
-            const result = await handleInput(word, state, session, ctx)
+            const result = await handleInput(word, state, argv, this)
             let text: string | Element = ''
             switch (result.type) {
               case 'bad-length':
@@ -154,11 +170,11 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
             if (result.type === 'correct') {
               // game ended
               sessionState.delete(`${session.guildId}.${session.channelId}`)
-              variation.onGameEnd?.(session, ctx)
+              variation.onGameEnd?.(argv, ctx)
               state.state = undefined
             } else if (state.guessedCount >= variation.guessCount ?? 6) {
               await session.send(session?.text('wordle.messages.game-over', [command.name, state.currentWord.join('')]))
-              variation.onGameEnd?.(session, ctx)
+              variation.onGameEnd?.(argv, ctx)
               sessionState.delete(`${session.guildId}.${session.channelId}`)
             } else if (result.type === 'incorrect') {
               sessionState.set(`${session.guildId}.${session.channelId}`, {
@@ -173,7 +189,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
           }
         } else {
           // start a new game
-          variation.onGameStart?.(session, ctx)
+          variation.onGameStart?.(argv, this)
           const currentWord = await this.getCurrentWord(argv, ctx)
           sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Active, currentWord })
           await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount ?? 6]))
@@ -182,7 +198,7 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
     }
 
     getCurrentWord(argv: Argv, ctx: Context) {
-      return variation.getCurrentWord(argv, ctx)
+      return variation.getCurrentWord(argv, this)
     }
 
     async formatTable(

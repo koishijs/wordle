@@ -1,0 +1,3 @@
+- $description: 基本设置
+  fallbackToRandom: 当访问 NYTimes 网站超时时，使用随机单词。
+  timeout: 超时时间 (单位：毫秒)
