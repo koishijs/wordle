@@ -1,0 +1,6 @@
+commands:
+  wordle:
+    description: 游玩 Wordle！
+
+    options:
+      random: 随机选取单词
