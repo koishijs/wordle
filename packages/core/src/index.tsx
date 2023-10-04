@@ -104,7 +104,6 @@ export function defineVariation<WordType extends any[] = string[], MoreUnitResul
     constructor(public ctx: Context) {
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
-      ctx.i18n.define('zh', require('./locales/zh-CN'))
 
       if (variation.locales) {
         Object.entries(variation.locales).forEach(([locale, data]) => {
