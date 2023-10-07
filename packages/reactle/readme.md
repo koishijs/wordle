@@ -23,3 +23,5 @@
 ## 许可证
 
 本插件使用 [AGPL-3.0](https://github.com/koishijs/wordle/tree/master/LICENSE) 许可证发布。
+
+本插件使用了来自于 [cwackerfuss](https://github.com/cwackerfuss) 的 [react-wordle](https://github.com/cwackerfuss/react-wordle) 的词库，按照原仓库的开源方式采用 MIT 协议引用。
