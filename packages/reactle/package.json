@@ -1,0 +1,45 @@
+{
+  "name": "koishi-plugin-reactle",
+  "description": "Play open-sourced version of wordle in Koishi",
+  "version": "0.0.1-alpha.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "author": {
+    "name": "Maiko Tan",
+    "email": "maiko.tan.coding@gmail.com",
+    "url": "https://github.com/MaikoTan"
+  },
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koishijs/wordle.git",
+    "directory": "packages/reactle"
+  },
+  "bugs": {
+    "url": "https://github.com/koishijs/wordle/issues"
+  },
+  "homepage": "https://wordle.koishi.chat",
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "service",
+    "plugin",
+    "wordle",
+    "game"
+  ],
+  "koishi": {
+    "description": {
+      "zh": "在 Koishi 中玩开源版 Wordle！"
+    }
+  },
+  "dependencies": {
+    "@koishijs/wordle": "^0.0.13"
+  },
+  "peerDependencies": {
+    "koishi": "^4.11.0"
+  }
+}
