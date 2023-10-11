@@ -36,7 +36,9 @@
       "zh": "在 Koishi 中玩 Wordle！"
     },
     "service": {
-      "required": ["canvas"]
+      "required": [
+        "canvas"
+      ]
     }
   },
   "dependencies": {
