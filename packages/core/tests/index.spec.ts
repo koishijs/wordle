@@ -1,7 +1,6 @@
 import memory from '@koishijs/plugin-database-memory'
 import mock from '@koishijs/plugin-mock'
 import { App, Session, Schema } from 'koishi'
-import puppeteer from 'koishi-plugin-puppeteer'
 
 import { defineVariation, Wordle } from '../src'
 
@@ -10,7 +9,6 @@ describe('core', () => {
 
   app.plugin(mock)
   app.plugin(memory)
-  app.plugin(puppeteer)
 
   const wordle = defineVariation({
     name: 'wordle-core-test',
@@ -21,7 +19,10 @@ describe('core', () => {
       return 'hello'.split('')
     },
   })
-
+  if ((wordle as any).using?.includes('canvas')) {
+    const index = (wordle as any).using.indexOf('canvas')
+    ;(wordle as any).using.splice(index, 1)
+  }
   wordle.prototype.render = async function (
     word: Wordle.UnitResult<any>[],
     guessedWords: Wordle.VerificatedResult[],
