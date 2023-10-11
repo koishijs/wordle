@@ -207,7 +207,7 @@ export function defineVariation<
       session: Session,
     ): Promise<string | Element> {
       const width = word.length * 60 + 5 * (word.length + 1)
-      const height = (variation.guessCount ?? 6) * 60 + 5 * ((variation.guessCount ?? 6) + 1)
+      const height = (variation.guessCount ?? 6) * 60 + 5 * ((variation.guessCount ?? 6) + 1) + 68 + 20 * 2
       const el = session.app.canvas.render(width, height, (ctx) => {
         // Set background color to white
         ctx.fillStyle = '#fff'
@@ -235,7 +235,7 @@ export function defineVariation<
             x += 60 + 5
           }
 
-          y += 40 + 5
+          y += 60 + 5
         }
       })
       return el
