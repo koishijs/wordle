@@ -1,6 +1,7 @@
 import memory from '@koishijs/plugin-database-memory'
 import mock from '@koishijs/plugin-mock'
-import { App } from 'koishi'
+import { Wordle } from '@koishijs/wordle'
+import { App, Session } from 'koishi'
 
 import wordle from '../src'
 
@@ -11,6 +12,25 @@ describe('wordle', () => {
   app.plugin(memory)
   // set getCurrentWord always return 'hello'
   ;(wordle as any).prototype.getCurrentWord = () => Promise.resolve(['h', 'e', 'l', 'l', 'o'])
+  if ((wordle as any).using?.includes('canvas')) {
+    const index = (wordle as any).using.indexOf('canvas')
+    ;(wordle as any).using.splice(index, 1)
+  }
+  wordle.prototype.render = async function (
+    word: Wordle.UnitResult<any>[],
+    guessedWords: Wordle.VerificatedResult[],
+    session: Session,
+  ) {
+    return word.map((unit) => {
+      if (unit.type === 'correct') {
+        return `[${unit.char}]`
+      } else if (unit.type === 'bad-position') {
+        return `(${unit.char})`
+      } else {
+        return unit.char
+      }
+    }).join('')
+  }
   app.plugin(wordle)
 
   const client = app.mock.client('123')
@@ -36,7 +56,7 @@ describe('wordle', () => {
   it('should process wordle gaming', async () => {
     await client.shouldReply('wordle aaaaa', 'not a word')
     await client.shouldReply('wordle h', 'bad length')
-    await client.shouldReply('wordle crown', /c {2}r \(o\) w {2}n/)
+    await client.shouldReply('wordle crown', /cr\(o\)wn/)
     await client.shouldReply('wordle hello', 'correct')
   })
 })
