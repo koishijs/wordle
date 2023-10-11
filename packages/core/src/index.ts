@@ -1,5 +1,5 @@
+import {} from '@koishijs/canvas'
 import { Argv, Command, Context, Element, Plugin, Session, Schema } from 'koishi'
-import {} from 'koishi-plugin-puppeteer'
 
 export interface VariationInstanceLike<T = any> {
   ctx: Context
@@ -110,7 +110,7 @@ export function defineVariation<
     name = variation.name
     static Config = variation.Config
     static schema = variation.schema
-    static using = variation.using
+    static using = Array.from(new Set(['canvas', ...(variation.using ?? [])]))
     static reusable = variation.reusable
     static reactive = variation.reactive
 
@@ -161,7 +161,7 @@ export function defineVariation<
                 text = session?.text('wordle.messages.correct')
                 break
               case 'incorrect':
-                text = await this.formatTable(result.unitResults, state.guessedWords ?? [], session)
+                text = await this.render(result.unitResults, state.guessedWords ?? [], session)
                 break
             }
 
@@ -201,117 +201,44 @@ export function defineVariation<
       return variation.getCurrentWord(argv, this)
     }
 
-    async formatTable(
+    async render(
       word: Wordle.UnitResult<any>[],
       guessedWords: Wordle.VerificatedResult[],
       session: Session,
     ): Promise<string | Element> {
-      const lines: string[] = []
+      const width = word.length * 60 + 5 * (word.length + 1)
+      const height = (variation.guessCount ?? 6) * 60 + 5 * ((variation.guessCount ?? 6) + 1)
+      const el = session.app.canvas.render(width, height, (ctx) => {
+        // Set background color to white
+        ctx.fillStyle = '#fff'
+        ctx.fillRect(0, 0, width, height)
+        // Draw centered header
+        ctx.font = 'bold 68px sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillStyle = '#000'
+        ctx.fillText(command.name.replace(/^./, (p) => p.toLocaleUpperCase()), width / 2, 68 / 2 + 20)
 
-      if (this.ctx.puppeteer) {
-        return (
-          <html>
-            <div>
-              <style>{`
-                * {
-                  margin: 0;
-                  padding: 0;
-                  box-sizing: border-box;
-                }
-                body {
-                  width: 400px;
-                  padding: 20px;
-                  font-family:
-                    -apple-system, "Microsoft Yahei", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-                  font-size: '24px';
-                  font-weight: 'bold';
-                }
-              `}</style>
-              <h1 style={{ textAlign: 'center', fontSize: '68px', textTransform: 'capitalize' }}>{command.name}</h1>
-              <div style={{ width: '100%' }}>
-                {[...guessedWords.map((item) => item.unitResults), word].map((items) => (
-                  <div
-                    style={{
-                      marginTop: '5px',
-                      width: '100%',
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(5, 1fr)',
-                      gridGap: '5px',
-                    }}
-                  >
-                    {items.map((item) => (
-                      <span
-                        style={{
-                          fontSize: '40px',
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase',
-                          width: '100%',
-                          aspectRatio: '1/1',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          color: 'white',
-                          backgroundColor:
-                            item.type === 'correct' ? '#6aaa64' : item.type === 'bad-position' ? '#c9b458' : '#787c7e',
-                        }}
-                      >
-                        {item.char}
-                      </span>
-                    ))}
-                  </div>
-                ))}
+        let y = 68 + 20 * 2
+        ctx.font = 'bold 36px sans-serif'
+        // Draw every line of word
+        for (const w of [...guessedWords, { unitResults: word, type: '' }]) {
+          let x = 5
+          for (const letter of w.unitResults) {
+            ctx.fillStyle =
+              letter.type === 'correct' ? '#6aaa64' : letter.type === 'bad-position' ? '#c9b458' : '#787c7e'
+            ctx.fillRect(x, y, 60, 60)
+            ctx.fillStyle = '#fff'
+            ctx.textAlign = 'center'
+            ctx.textBaseline = 'middle'
+            ctx.fillText(letter.char.toLocaleUpperCase(), x + 60 / 2, y + 60 / 2)
+            x += 60 + 5
+          }
 
-                {Array.from({ length: (this._variation.guessCount ?? 6) - guessedWords.length - 1 }).map(() => (
-                  <div
-                    style={{
-                      marginTop: '5px',
-                      width: '100%',
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(5, 1fr)',
-                      gridGap: '5px',
-                    }}
-                  >
-                    {Array.from({ length: word.length }).map(() => (
-                      <span
-                        style={{
-                          display: 'flex',
-                          width: '100%',
-                          aspectRatio: '1/1',
-                          border: '2px solid #3a3a3c',
-                        }}
-                      >
-                        &nbsp;
-                      </span>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </html>
-        )
-      } else {
-        ;[...guessedWords.map((item) => item.unitResults), word].forEach((result) => {
-          let line: string = ''
-          result.forEach((unit) => {
-            switch (unit.type) {
-              case 'correct':
-                line += `[${unit.char}]`
-                break
-              case 'bad-position':
-                line += `(${unit.char})`
-                break
-              case 'incorrect':
-                line += ` ${unit.char} `
-                break
-            }
-          })
-
-          lines.push(line)
-        })
-        lines.push(session.text('wordle.messages.text-hint'))
-
-        return lines.join('\n')
-      }
+          y += 40 + 5
+        }
+      })
+      return el
     }
   }
 }
