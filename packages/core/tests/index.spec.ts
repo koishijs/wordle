@@ -33,7 +33,7 @@ describe('core', () => {
       } else {
         return unit.char
       }
-    })
+    }).join('')
   }
 
   app.plugin(wordle)
