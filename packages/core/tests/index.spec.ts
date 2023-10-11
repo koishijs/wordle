@@ -22,7 +22,7 @@ describe('core', () => {
     },
   })
 
-  wordle.prototype.render = function (
+  wordle.prototype.render = async function (
     word: Wordle.UnitResult<any>[],
     guessedWords: Wordle.VerificatedResult[],
     session: Session,
