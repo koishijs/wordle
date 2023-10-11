@@ -208,7 +208,7 @@ export function defineVariation<
     ): Promise<string | Element> {
       const width = word.length * 60 + 5 * (word.length + 1)
       const height = (variation.guessCount ?? 6) * 60 + 5 * ((variation.guessCount ?? 6) + 1) + 68 + 20 * 2
-      const el = session.app.canvas.render(width, height, (ctx) => {
+      return await session.app.canvas.render(width, height, (ctx) => {
         // Set background color to white
         ctx.fillStyle = '#fff'
         ctx.fillRect(0, 0, width, height)
@@ -231,14 +231,13 @@ export function defineVariation<
             ctx.fillStyle = '#fff'
             ctx.textAlign = 'center'
             ctx.textBaseline = 'middle'
-            ctx.fillText(letter.char.toLocaleUpperCase(), x + 60 / 2, y + 60 / 2)
+            ctx.fillText(letter.char.toLocaleUpperCase(), x + 60 / 2, y + 60 / 2 + 2)
             x += 60 + 5
           }
 
           y += 60 + 5
         }
       })
-      return el
     }
   }
 }
