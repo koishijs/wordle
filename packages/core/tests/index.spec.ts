@@ -1,6 +1,7 @@
 import memory from '@koishijs/plugin-database-memory'
 import mock from '@koishijs/plugin-mock'
 import { App, Session, Schema } from 'koishi'
+import puppeteer from 'koishi-plugin-puppeteer'
 
 import { defineVariation, Wordle } from '../src'
 
@@ -9,6 +10,7 @@ describe('core', () => {
 
   app.plugin(mock)
   app.plugin(memory)
+  app.plugin(puppeteer)
 
   const wordle = defineVariation({
     name: 'wordle-core-test',
