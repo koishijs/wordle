@@ -57,7 +57,7 @@ describe('reactle', () => {
   it('should process wordle gaming', async () => {
     await client.shouldReply('reactle aaaaa', 'not a word')
     await client.shouldReply('reactle h', 'bad length')
-    await client.shouldReply('reactle crown', /c {2}r \(o\) w {2}n/)
+    await client.shouldReply('reactle crown', /cr\(o\)wn/)
     await client.shouldReply('reactle hello', 'correct')
   })
 })
