@@ -22,6 +22,7 @@
 |插件|版本|介绍|
 |:-:|:-:|:-:|
 | [koishi-plugin-wordle](https://wordle.koishi.chat/plugins/wordle.html) | ![NPM](https://img.shields.io/npm/v/koishi-plugin-wordle?style=flat-square) | 经典 Wordle (NYTimes) |
+| [koishi-plugin-reactle](https://wordle.koishi.chat/plugins/reactle.html) | ![NPM](https://img.shields.io/npm/v/koishi-plugin-reactle?style=flat-square) | 开源 Wordle 复刻 |
 
 ## 许可证
 
