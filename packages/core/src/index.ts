@@ -1,5 +1,5 @@
 import {} from '@koishijs/canvas'
-import { Argv, Command, Context, Element, Plugin, Session, Schema } from 'koishi'
+import { Argv, Command, Context, Element, h, Plugin, Session, Schema } from 'koishi'
 
 export interface VariationInstanceLike<T = any> {
   ctx: Context
@@ -157,19 +157,20 @@ export function defineVariation<
         if (state?.state === Wordle.GameState.Active) {
           if (word) {
             const result = await handleInput(word, state, argv, this)
-            let text: string | Element = ''
+            const text: Element[] = []
             switch (result.type) {
               case 'bad-length':
-                text = session?.text('wordle.messages.bad-length')
+                text.push(h.text(session?.text('wordle.messages.bad-length')))
                 break
               case 'invalid':
-                text = session?.text('wordle.messages.invalid')
+                text.push(h.text(session?.text('wordle.messages.invalid')))
                 break
               case 'correct':
-                text = session?.text('wordle.messages.correct')
-                break
+                text.push(h.text(session?.text('wordle.messages.correct')))
+              // Note: here we do not use `break` here as we need to render the result as well
+              // eslint-disable-next-line no-fallthrough
               case 'incorrect':
-                text = await this.render(result.unitResults, state.guessedWords ?? [], session)
+                text.push(await this.render(result.unitResults, state.guessedWords ?? [], session))
                 break
             }
 
@@ -179,7 +180,6 @@ export function defineVariation<
               // game ended
               sessionState.delete(`${session.guildId}.${session.channelId}`)
               variation.onGameEnd?.(argv, ctx)
-              state.state = undefined
             } else if (state.guessedCount >= variation.guessCount ?? 6) {
               await session.send(session?.text('wordle.messages.game-over', [command.name, state.currentWord.join('')]))
               variation.onGameEnd?.(argv, ctx)
@@ -213,7 +213,7 @@ export function defineVariation<
       word: Wordle.UnitResult<any>[],
       guessedWords: Wordle.VerificatedResult[],
       session: Session,
-    ): Promise<string | Element> {
+    ): Promise<Element> {
       const width = word.length * 60 + 5 * (word.length + 1)
       const height = (variation.guessCount ?? 6) * 60 + 5 * ((variation.guessCount ?? 6) + 1) + 68 + 20 * 2
       return await session.app.canvas.render(width, height, (ctx) => {
