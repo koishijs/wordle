@@ -120,6 +120,14 @@ export function defineVariation<
     ) {
       // define locales
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
+      // register global command messages for this variation
+      ctx.i18n.define('zh-CN', {
+        commands: {
+          [typeof variation.command === 'string'
+            ? variation.command
+            : variation.command.name]: require('./locales/commands.zh-CN'),
+        },
+      })
 
       if (variation.locales) {
         Object.entries(variation.locales).forEach(([locale, data]) => {
@@ -129,12 +137,12 @@ export function defineVariation<
 
       command = typeof variation.command === 'string' ? ctx.command(variation.command) : variation.command
       variation.init?.(command, this)
-      command.option('exit', '-e')
+      command.option('quit', '-q')
 
       command.action(async (argv, word) => {
         const { session } = argv
         const state = sessionState.get(`${session.guildId}.${session.channelId}`)
-        if ((argv.options as any).exit) {
+        if ((argv.options as any).quit) {
           if (state?.state !== Wordle.GameState.Active) {
             return session?.text('wordle.messages.not-started', [command.name])
           }
@@ -217,7 +225,11 @@ export function defineVariation<
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillStyle = '#000'
-        ctx.fillText(command.name.replace(/^./, (p) => p.toLocaleUpperCase()), width / 2, 68 / 2 + 20)
+        ctx.fillText(
+          command.name.replace(/^./, (p) => p.toLocaleUpperCase()),
+          width / 2,
+          68 / 2 + 20,
+        )
 
         let y = 68 + 20 * 2
         ctx.font = 'bold 36px sans-serif'
