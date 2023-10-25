@@ -9,7 +9,8 @@ Wordle 是一款由威尔士的软件开发者 [Josh Wardle](https://en.wikipedi
 :::
 ## 插件
 
-- [koishi-plugin-wordle](./plugins/wordle)
+- [wordle](./plugins/wordle)
+- [reactle](./plugins/reactle)
 
 ## 许可证
 
