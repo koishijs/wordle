@@ -57,6 +57,6 @@ describe('wordle', () => {
     await client.shouldReply('wordle aaaaa', 'not a word')
     await client.shouldReply('wordle h', 'bad length')
     await client.shouldReply('wordle crown', /cr\(o\)wn/)
-    await client.shouldReply('wordle hello', 'correct')
+    await client.shouldReply('wordle hello', /^correct/)
   })
 })
