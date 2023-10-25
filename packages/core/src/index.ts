@@ -193,7 +193,7 @@ export function defineVariation<
               })
             }
           } else {
-            return session?.text('wordle.messages.no-input')
+            return session?.text('wordle.messages.no-input', [command.name])
           }
         } else {
           // start a new game
