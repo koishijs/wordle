@@ -75,11 +75,11 @@ describe('core', () => {
   })
 
   it('should output correct', async () => {
-    await client.shouldReply('wordle hello', 'correct')
+    await client.shouldReply('wordle hello', /^correct/)
   })
 
   it('should exit the game', async () => {
     await client.shouldReply('wordle', 'game-started')
-    await client.shouldReply('wordle --exit', 'game-ended')
+    await client.shouldReply('wordle --quit', 'game-ended')
   })
 })

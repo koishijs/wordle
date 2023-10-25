@@ -58,6 +58,6 @@ describe('reactle', () => {
     await client.shouldReply('reactle aaaaa', 'not a word')
     await client.shouldReply('reactle h', 'bad length')
     await client.shouldReply('reactle crown', /cr\(o\)wn/)
-    await client.shouldReply('reactle hello', 'correct')
+    await client.shouldReply('reactle hello', /^correct/)
   })
 })
