@@ -30,6 +30,13 @@ export default defineConfig({
         items: [{ text: '介绍', link: '/' }],
       },
       {
+        text: '插件',
+        items: [
+          { text: 'Wordle', link: '/plugins/wordle' },
+          { text: 'Reactle', link: '/plugins/reactle' },
+        ],
+      },
+      {
         text: '更多',
         items: [{ text: 'Koishi 官网', link: 'https://koishi.chat' }],
       },
