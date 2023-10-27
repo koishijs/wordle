@@ -118,8 +118,8 @@ export function defineVariation<
       }
     } else {
       return {
-        required: Array.from(new Set(inject.required ?? [])).concat(['canvas']),
-        optional: Array.from(new Set(inject.optional ?? [])),
+        required: Array.from(new Set((inject.required ?? []).concat(['canvas']))),
+        optional: inject.optional,
       }
     }
   }
@@ -129,8 +129,7 @@ export function defineVariation<
     // re-export koishi fields
     name = variation.name
     static Config = variation.Config
-    static inject = normalizeInject(variation.inject)
-    static using = normalizeInject(variation.using)
+    static inject = normalizeInject(variation.inject ?? variation.using)
     static reusable = variation.reusable
     static reactive = variation.reactive
 
