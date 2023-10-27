@@ -19,10 +19,8 @@ describe('core', () => {
       return 'hello'.split('')
     },
   })
-  if ((wordle as any).using?.includes('canvas')) {
-    const index = (wordle as any).using.indexOf('canvas')
-    ;(wordle as any).using.splice(index, 1)
-  }
+  ;(wordle as any).using = []
+  ;(wordle as any).inject = []
   wordle.prototype.render = async function (
     word: Wordle.UnitResult<any>[],
     guessedWords: Wordle.VerificatedResult[],
