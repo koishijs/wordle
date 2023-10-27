@@ -1,4 +1,5 @@
-import {} from '@koishijs/canvas'
+import type {} from '@koishijs/canvas'
+import type { Inject } from 'cordis'
 import { Argv, Command, Context, Element, h, Plugin, Session, Schema } from 'koishi'
 
 export interface VariationInstanceLike<T = any> {
@@ -8,7 +9,7 @@ export interface VariationInstanceLike<T = any> {
 
 export interface WordleVariation<
   Config = any,
-  ConfigSchema = Schema<Config>,
+  ConfigSchema extends Schema<Config> = Schema<Config>,
   WordType extends any[] = string[],
   MoreUnitResult = WordType[number],
 > extends Omit<Plugin.Object, 'Config' | 'apply'> {
@@ -59,7 +60,7 @@ export namespace Wordle {
 
 export function defineVariation<
   Config = any,
-  ConfigSchema = Schema<Config>,
+  ConfigSchema extends Schema<Config> = Schema<Config>,
   WordType extends any[] = string[],
   MoreUnitResult = string,
 >(variation: WordleVariation<Config, ConfigSchema, WordType, MoreUnitResult>): Plugin.Constructor {
@@ -104,13 +105,32 @@ export function defineVariation<
       }
     }
 
+  function normalizeInject(inject: string[] | Partial<Inject>): Inject {
+    if (typeof inject === 'undefined') {
+      return {
+        required: ['canvas'],
+        optional: [],
+      }
+    } else if (Array.isArray(inject)) {
+      return {
+        required: Array.from(new Set(inject)).concat(['canvas']),
+        optional: [],
+      }
+    } else {
+      return {
+        required: Array.from(new Set(inject.required ?? [])).concat(['canvas']),
+        optional: Array.from(new Set(inject.optional ?? [])),
+      }
+    }
+  }
+
   return class {
     _variation = variation
     // re-export koishi fields
     name = variation.name
     static Config = variation.Config
-    static schema = variation.schema
-    static using = Array.from(new Set(['canvas', ...(variation.using ?? [])]))
+    static inject = normalizeInject(variation.inject)
+    static using = normalizeInject(variation.using)
     static reusable = variation.reusable
     static reactive = variation.reactive
 
