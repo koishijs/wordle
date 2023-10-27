@@ -12,7 +12,6 @@ describe('reactle', () => {
   app.plugin(memory)
   // set getCurrentWord always return 'hello'
   ;(reactle as any).prototype.getCurrentWord = () => Promise.resolve(['h', 'e', 'l', 'l', 'o'])
-  ;(reactle as any).using = []
   ;(reactle as any).inject = []
   reactle.prototype.render = async function (
     word: Wordle.UnitResult<any>[],
