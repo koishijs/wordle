@@ -45,6 +45,6 @@
     "@koishijs/wordle": "^0.0.15"
   },
   "peerDependencies": {
-    "koishi": "^4.11.0"
+    "koishi": "^4.15.3"
   }
 }
