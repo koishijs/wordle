@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-wordle",
   "description": "Play wordle in Koishi",
-  "version": "0.0.1-alpha.12",
+  "version": "0.0.1-alpha.13",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -42,7 +42,7 @@
     }
   },
   "dependencies": {
-    "@koishijs/wordle": "^0.0.15"
+    "@koishijs/wordle": "^0.0.16"
   },
   "peerDependencies": {
     "koishi": "^4.15.3"
