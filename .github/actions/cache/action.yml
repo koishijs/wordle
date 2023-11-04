@@ -5,7 +5,7 @@ description: Cache Yarn dependencies
 inputs:
   os:
     description: |
-      The operating system to cache dependencies for. This should almost always be \${{ runner.os }}.
+      The operating system to cache dependencies for. This should almost always be `runner.os`.
     required: true
     default: ${{ runner.os }}
 
