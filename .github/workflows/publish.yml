@@ -15,6 +15,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+
+      - name: Cache Yarn dependencies
+        uses: ./.github/actions/cache
+        with:
+          os: ${{ runner.os }}
+
       - name: Install
         run: yarn
 

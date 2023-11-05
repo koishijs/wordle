@@ -20,6 +20,11 @@ jobs:
         with:
           node-version: ${{ matrix.version }}
 
+      - name: Cache Yarn dependencies
+        uses: ./.github/actions/cache
+        with:
+          os: ${{ runner.os }}
+
       - name: Install dependencies
         run: yarn install
 
