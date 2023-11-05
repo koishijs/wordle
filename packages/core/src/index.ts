@@ -67,6 +67,9 @@ export function defineVariation<
   let command: Command
   const sessionState = new Map<string, Wordle.WordleState<WordType>>()
 
+  // assign default values
+  variation.guessCount ??= 6
+
   const handleInput =
     variation.handleInput ??
     async function (input, state: Wordle.WordleState<WordType>, session, ctx) {
@@ -199,7 +202,7 @@ export function defineVariation<
               // game ended
               sessionState.delete(`${session.guildId}.${session.channelId}`)
               variation.onGameEnd?.(argv, ctx)
-            } else if (state.guessedCount >= variation.guessCount ?? 6) {
+            } else if (state.guessedCount >= variation.guessCount) {
               await session.send(session?.text('wordle.messages.game-over', [command.name, state.currentWord.join('')]))
               variation.onGameEnd?.(argv, ctx)
               sessionState.delete(`${session.guildId}.${session.channelId}`)
@@ -219,7 +222,7 @@ export function defineVariation<
           variation.onGameStart?.(argv, this)
           const currentWord = await this.getCurrentWord(argv, ctx)
           sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Active, currentWord })
-          await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount ?? 6]))
+          await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount]))
         }
       })
     }
@@ -234,7 +237,7 @@ export function defineVariation<
       session: Session,
     ): Promise<Element> {
       const width = word.length * 60 + 5 * (word.length + 1)
-      const height = (variation.guessCount ?? 6) * 60 + 5 * ((variation.guessCount ?? 6) + 1) + 68 + 20 * 2
+      const height = variation.guessCount * 60 + 5 * (variation.guessCount + 1) + 68 + 20 * 2
       return await session.app.canvas.render(width, height, (ctx) => {
         // Set background color to white
         ctx.fillStyle = '#fff'
