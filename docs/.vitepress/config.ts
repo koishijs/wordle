@@ -37,6 +37,12 @@ export default defineConfig({
         ],
       },
       {
+        text: '开发',
+        items: [
+          { text: '开发插件', link: '/develop/plugin' },
+        ],
+      },
+      {
         text: '更多',
         items: [{ text: 'Koishi 官网', link: 'https://koishi.chat' }],
       },
