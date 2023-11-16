@@ -1,0 +1,67 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: Cache Yarn dependencies
+        uses: ./.github/actions/cache
+        with:
+          os: ${{ runner.os }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint JavaScript
+        run: yarn lint
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: Cache Yarn dependencies
+        uses: ./.github/actions/cache
+        with:
+          os: ${{ runner.os }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint JavaScript
+        run: yarn build
+
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [18, 20]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.version }}
+
+      - name: Cache Yarn dependencies
+        uses: ./.github/actions/cache
+        with:
+          os: ${{ runner.os }}
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Test
+        run: yarn test
