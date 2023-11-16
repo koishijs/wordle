@@ -12,6 +12,8 @@ export default defineConfig({
   ],
 
   themeConfig: {
+    indexName: 'koishi-wordle',
+
     nav: [
       {
         text: '更多',
