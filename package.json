@@ -43,7 +43,7 @@
     "eslint-plugin-prettier": "^5.0.1",
     "jest-mock": "^29.7.0",
     "koishi": "^4.15.4",
-    "koishi-plugin-puppeteer": "^3.7.0",
+    "koishi-plugin-puppeteer": "^3.7.3",
     "mocha": "^10.2.0",
     "prettier": "^3.0.3",
     "sass": "^1.69.5",
