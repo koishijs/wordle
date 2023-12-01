@@ -48,7 +48,7 @@
     "prettier": "^3.0.3",
     "sass": "^1.69.5",
     "shx": "^0.3.4",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.2",
     "vitepress": "1.0.0-rc.24",
     "yakumo": "^0.3.13",
     "yakumo-esbuild": "^0.3.26",
