@@ -6,7 +6,7 @@
 
 ## 创建新插件
 
-首先应当按照 [Koishi 工作区开发](https://koishi.chat/zh-CN/guide/develop/workspace.html) 创建一个新的插件项目，然后在项目目录下安装 `@koishijs/wordle`：
+首先应当按照 [Koishi 工作区开发](https://koishi.chat/zh-CN/guide/develop/workspace.html) 创建一个新的插件项目，然后在项目目录下安装 `@koishijs/wordle` 作为直接依赖：
 
 :::tabs code
 ```npm
@@ -17,7 +17,7 @@ yarn add @koishijs/wordle
 ```
 :::
 
-然后进入 `src/index.ts`，你会发现 Koishi 的工具链已经为你写入了一些基本的代码。但由于 Wordle 插件的特殊性，我们应当将其替换为如下的形式：
+进入 `src/index.ts`，如果你使用 Koishi 的工具链，它会为你写入了一些基本的代码。由于 Wordle 插件的特殊性，我们此处不使用这些代码，而是采用 `@koishijs/wordle` 导出的 `defineVariation`：
 
 ```ts
 import { defineVariation } from '@koishijs/wordle'
@@ -32,7 +32,7 @@ export default defineVariation<Config>({
   locales: {
     'zh-CN': require('./locales/zh-CN'),
   },
-  validWords: [], // 单词列表
+  validWords: [], // 合法单词列表
   init(command, ctx) {
     // 初始化操作，如注册指令的选项等。
   },
