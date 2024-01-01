@@ -45,7 +45,7 @@
     "koishi": "^4.15.4",
     "koishi-plugin-puppeteer": "^3.7.0",
     "mocha": "^10.2.0",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.1",
     "sass": "^1.69.5",
     "shx": "^0.3.4",
     "typescript": "^5.3.2",
