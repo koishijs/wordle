@@ -57,7 +57,7 @@
     "yakumo-publish": "^0.3.10",
     "yakumo-publish-sync": "^0.3.3",
     "yakumo-tsc": "^0.3.12",
-    "yakumo-upgrade": "^0.3.4",
+    "yakumo-upgrade": "^0.3.6",
     "yakumo-version": "^0.3.4",
     "yml-register": "^1.1.0"
   }

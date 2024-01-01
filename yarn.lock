@@ -1081,7 +1081,7 @@ __metadata:
     yakumo-publish: ^0.3.10
     yakumo-publish-sync: ^0.3.3
     yakumo-tsc: ^0.3.12
-    yakumo-upgrade: ^0.3.4
+    yakumo-upgrade: ^0.3.6
     yakumo-version: ^0.3.4
     yml-register: ^1.1.0
   languageName: unknown
@@ -7809,9 +7809,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yakumo-upgrade@npm:^0.3.4":
-  version: 0.3.4
-  resolution: "yakumo-upgrade@npm:0.3.4"
+"yakumo-upgrade@npm:^0.3.6":
+  version: 0.3.6
+  resolution: "yakumo-upgrade@npm:0.3.6"
   dependencies:
     kleur: ^4.1.5
     latest-version: ^5.1.0
@@ -7820,7 +7820,7 @@ __metadata:
     semver: ^7.5.4
   peerDependencies:
     yakumo: ^0.3.13
-  checksum: 157ba68089157a7481d33457440a40742b40312723dfc005a01c081f1c30aa9a0c5f74c14b0195339fab988abb05f1cfbb81f4949d16eb95e7030ccb0471a81c
+  checksum: 2240e47e7360cbc1aa3384019fc558933976b1c52f6e734c58447b293945f6eb3c6fb9eafaf73fa18c56952de1085c5f525663e9fe4f2a73d55b1f0e34ee5dd8
   languageName: node
   linkType: hard
 
