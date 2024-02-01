@@ -1063,7 +1063,7 @@ __metadata:
     eslint: ^8.53.0
     eslint-import-resolver-typescript: ^3.6.1
     eslint-plugin-import: ^2.29.0
-    eslint-plugin-n: ^16.2.0
+    eslint-plugin-n: ^16.6.2
     eslint-plugin-prettier: ^5.0.1
     jest-mock: ^29.7.0
     koishi: ^4.15.4
@@ -3422,6 +3422,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-compat-utils@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "eslint-compat-utils@npm:0.1.2"
+  peerDependencies:
+    eslint: ">=6.0.0"
+  checksum: 2315d9db81efb7f58808053bf32a1d5970b38e01cd8244f4f1b5aa05d883255c5c93fc184e9c29a0e7e2dcf16ff16330977302474d3fa870e41c5bed9c66f76b
+  languageName: node
+  linkType: hard
+
 "eslint-config-standard@npm:^17.0.0":
   version: 17.1.0
   resolution: "eslint-config-standard@npm:17.1.0"
@@ -3475,15 +3484,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-es-x@npm:^7.1.0":
-  version: 7.2.0
-  resolution: "eslint-plugin-es-x@npm:7.2.0"
+"eslint-plugin-es-x@npm:^7.5.0":
+  version: 7.5.0
+  resolution: "eslint-plugin-es-x@npm:7.5.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.1.2
     "@eslint-community/regexpp": ^4.6.0
+    eslint-compat-utils: ^0.1.2
   peerDependencies:
     eslint: ">=8"
-  checksum: eece76ef6bcfce463659338b487e516e962ddf3ae34a8a65240ebd318fc991cabfe3573b1c3af5226474193b9c83f030c7900a8e5ffdbe731a3928ca8f2799c9
+  checksum: e770e57df78c3c38582de9bc4b9632ec5101a6dae8ac84f6ac219e8d8eb137f943db9730e037cfbc82f5d3ab6358e1b494fa6c628f425ebfc7e3094d5aa9d223
   languageName: node
   linkType: hard
 
@@ -3583,14 +3593,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-n@npm:^16.2.0":
-  version: 16.3.1
-  resolution: "eslint-plugin-n@npm:16.3.1"
+"eslint-plugin-n@npm:^16.6.2":
+  version: 16.6.2
+  resolution: "eslint-plugin-n@npm:16.6.2"
   dependencies:
     "@eslint-community/eslint-utils": ^4.4.0
     builtins: ^5.0.1
-    eslint-plugin-es-x: ^7.1.0
+    eslint-plugin-es-x: ^7.5.0
     get-tsconfig: ^4.7.0
+    globals: ^13.24.0
     ignore: ^5.2.4
     is-builtin-module: ^3.2.1
     is-core-module: ^2.12.1
@@ -3599,7 +3610,7 @@ __metadata:
     semver: ^7.5.3
   peerDependencies:
     eslint: ">=7.0.0"
-  checksum: 915d80f16e2668d4692536bd4592f7d9d5202c5babf8d204fdb602137481d2fcb2a7c76f67958b327699d9df5c22d91def0b42b6599a3e283941170a320f77d3
+  checksum: 3b468da0038cf25af582608983491b33ac2d481b6a94a0ff2e715d3b85e1ff8cb93df4cd67b689d520bea1bfb8f2b717f01606bf6b2ea19fe8f9c0999ea7057d
   languageName: node
   linkType: hard
 
@@ -4273,6 +4284,15 @@ __metadata:
   dependencies:
     type-fest: ^0.20.2
   checksum: 64af5a09565341432770444085f7aa98b54331c3b69732e0de411003921fa2dd060222ae7b50bec0b98f29c4d00b4f49bf434049ba9f7c36ca4ee1773f60458c
+  languageName: node
+  linkType: hard
+
+"globals@npm:^13.24.0":
+  version: 13.24.0
+  resolution: "globals@npm:13.24.0"
+  dependencies:
+    type-fest: ^0.20.2
+  checksum: 56066ef058f6867c04ff203b8a44c15b038346a62efbc3060052a1016be9f56f4cf0b2cd45b74b22b81e521a889fc7786c73691b0549c2f3a6e825b3d394f43c
   languageName: node
   linkType: hard
 
