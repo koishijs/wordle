@@ -203,7 +203,7 @@ export function defineVariation<
               sessionState.delete(`${session.guildId}.${session.channelId}`)
               variation.onGameEnd?.(argv, ctx)
             } else if (state.guessedCount >= variation.guessCount) {
-              await session.send(session?.text('wordle.messages.game-over', [command.name, state.currentWord.join('')]))
+              await session.send(session?.text('wordle.messages.game-over', [state.currentWord.join('')]))
               variation.onGameEnd?.(argv, ctx)
               sessionState.delete(`${session.guildId}.${session.channelId}`)
             } else if (result.type === 'incorrect') {
@@ -221,7 +221,11 @@ export function defineVariation<
           // start a new game
           variation.onGameStart?.(argv, this)
           const currentWord = await this.getCurrentWord(argv, ctx)
-          sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Active, currentWord })
+          sessionState.set(`${session.guildId}.${session.channelId}`, {
+            state: Wordle.GameState.Active,
+            currentWord,
+            guessedCount: 1,
+          })
           await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount]))
         }
       })
