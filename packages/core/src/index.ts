@@ -221,7 +221,11 @@ export function defineVariation<
           // start a new game
           variation.onGameStart?.(argv, this)
           const currentWord = await this.getCurrentWord(argv, ctx)
-          sessionState.set(`${session.guildId}.${session.channelId}`, { state: Wordle.GameState.Active, currentWord, guessedCount: 1 })
+          sessionState.set(`${session.guildId}.${session.channelId}`, {
+            state: Wordle.GameState.Active,
+            currentWord,
+            guessedCount: 1,
+          })
           await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount]))
         }
       })
