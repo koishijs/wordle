@@ -52,7 +52,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.WORKFLOW_TOKEN }}
-          external_repository: koishi-bot/booru
+          external_repository: koishi-bot/wordle
           publish_branch: pages
           publish_dir: docs/.vitepress/dist
           force_orphan: true
