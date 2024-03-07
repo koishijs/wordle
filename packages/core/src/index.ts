@@ -132,7 +132,7 @@ export function defineVariation<
     // re-export koishi fields
     name = variation.name
     static Config = variation.Config
-    static inject = normalizeInject(variation.inject ?? variation.using)
+    static inject = normalizeInject(variation.inject)
     static reusable = variation.reusable
     static reactive = variation.reactive
 
