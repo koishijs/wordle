@@ -2,6 +2,7 @@
   "name": "@root/wordle",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
@@ -49,7 +50,7 @@
     "sass": "^1.69.5",
     "shx": "^0.3.4",
     "typescript": "^5.3.2",
-    "vitepress": "1.0.0-rc.24",
+    "vitepress": "1.0.0-rc.45",
     "yakumo": "^0.3.13",
     "yakumo-esbuild": "^0.3.26",
     "yakumo-esbuild-yaml": "^0.3.1",
