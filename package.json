@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@hamster-bot/eslint-config": "^1.0.5",
-    "@koishijs/plugin-database-memory": "^2.6.0",
+    "@koishijs/plugin-database-memory": "^3.0.0",
     "@koishijs/plugin-mock": "^2.6.5",
     "@koishijs/vitepress": "^3.2.4",
     "@types/chai": "^4.3.12",
@@ -34,7 +34,7 @@
     "@typescript-eslint/parser": "^7.1.1",
     "c8": "^8.0.1",
     "chai": "^4.4.1",
-    "esbuild": "^0.19.12",
+    "esbuild": "^0.20.1",
     "esbuild-register": "^3.5.0",
     "eslint": "^8.57.0",
     "eslint-import-resolver-typescript": "^3.6.1",
