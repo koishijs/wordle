@@ -32,7 +32,7 @@
     "game"
   ],
   "peerDependencies": {
-    "koishi": "^4.15.3"
+    "koishi": "^4.17.2"
   },
   "devDependencies": {
     "@koishijs/canvas": "^0.2.0"
