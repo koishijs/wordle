@@ -11,10 +11,10 @@ describe('wordle', () => {
   app.plugin(mock)
   app.plugin(memory)
   // set getCurrentWord always return 'hello'
-  ;(wordle as any).prototype.getCurrentWord = () => Promise.resolve(['h', 'e', 'l', 'l', 'o'])
-  ;(wordle as any).inject = []
+  wordle.prototype.getCurrentWord = () => Promise.resolve(['h', 'e', 'l', 'l', 'o'])
+  wordle.inject = []
   wordle.prototype.render = async function (
-    word: Wordle.UnitResult<any>[],
+    word: Wordle.UnitResult<unknown>[],
     guessedWords: Wordle.VerificatedResult[],
     session: Session,
   ) {
