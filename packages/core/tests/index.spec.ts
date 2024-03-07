@@ -19,9 +19,9 @@ describe('core', () => {
       return 'hello'.split('')
     },
   })
-  ;(wordle as any).inject = []
+  wordle.inject = []
   wordle.prototype.render = async function (
-    word: Wordle.UnitResult<any>[],
+    word: Wordle.UnitResult<string>[],
     guessedWords: Wordle.VerificatedResult[],
     session: Session,
   ) {

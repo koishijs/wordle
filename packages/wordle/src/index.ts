@@ -41,6 +41,7 @@ export default defineVariation<Config>({
     command.option('random', '-r')
   },
   async getCurrentWord({ options, session }, { ctx, config }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((options as any).random) {
       return getRandomWord().split('')
     }

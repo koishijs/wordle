@@ -19,6 +19,7 @@ export default defineVariation<Config>({
     command.option('random', '-r')
   },
   async getCurrentWord({ options }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((options as any).random) {
       return wordlist[Math.floor(Math.random() * wordlist.length)].split('')
     }
