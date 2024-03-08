@@ -14,3 +14,4 @@ ignorePatterns:
   - packages/*/dist
   - packages/*/coverage
   - packages/*/docs
+  - external/**/*

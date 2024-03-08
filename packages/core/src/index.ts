@@ -1,21 +1,24 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import type {} from '@koishijs/canvas'
-import type { Inject } from 'cordis'
-import { Argv, Command, Context, Element, h, Plugin, Session, Schema } from 'koishi'
+import { Argv, Command, Context, Element, h, I18n, Plugin, Session, Schema } from 'koishi'
 
-export interface VariationInstanceLike<T = any> {
+import type { Inject } from 'cordis'
+
+export interface VariationInstanceLike<T = unknown> {
   ctx: Context
   config: T
 }
 
 export interface WordleVariation<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Config = any,
   ConfigSchema extends Schema<Config> = Schema<Config>,
-  WordType extends any[] = string[],
+  WordType extends unknown[] = string[],
   MoreUnitResult = WordType[number],
 > extends Omit<Plugin.Object, 'Config' | 'apply'> {
   command: string | Command
   Config: ConfigSchema
-  locales?: Record<string, any>
+  locales?: Record<string, I18n.Store>
   guessCount?: number
   possibleUnitResults?: readonly MoreUnitResult[]
   init?: (command: Command, cls: VariationInstanceLike<Config>) => void
@@ -25,7 +28,7 @@ export interface WordleVariation<
   // Game logic and lifecycle
   onGameStart?: (argv: Argv, cls: VariationInstanceLike<Config>) => Promise<void>
   onGameEnd?: (argv: Argv, ctx: Context) => Promise<void>
-  handleInput?: <WordType extends any[] = string[]>(
+  handleInput?: <WordType extends unknown[] = string[]>(
     input: string,
     state: Wordle.WordleState<WordType>,
     argv: Argv,
@@ -38,16 +41,16 @@ export namespace Wordle {
     Active = 'active',
   }
 
-  export interface WordleState<WordType extends any[] = string[]> {
+  export interface WordleState<WordType extends unknown[] = string[]> {
     state?: GameState
     currentWord: WordType
-    guessedWords?: VerificatedResult<any>[]
+    guessedWords?: VerificatedResult<unknown>[]
     guessedCount?: number
   }
 
   export type UnitResultType = 'correct' | 'bad-position' | 'incorrect'
 
-  export interface UnitResult<MoreUnitResult, WordType extends any[] = string[]> {
+  export interface UnitResult<MoreUnitResult, WordType extends unknown[] = string[]> {
     type: UnitResultType | MoreUnitResult
     char: WordType[number]
   }
@@ -59,9 +62,10 @@ export namespace Wordle {
 }
 
 export function defineVariation<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Config = any,
   ConfigSchema extends Schema<Config> = Schema<Config>,
-  WordType extends any[] = string[],
+  WordType extends unknown[] = string[],
   MoreUnitResult = string,
 >(variation: WordleVariation<Config, ConfigSchema, WordType, MoreUnitResult>): Plugin.Constructor {
   let command: Command
@@ -132,7 +136,7 @@ export function defineVariation<
     // re-export koishi fields
     name = variation.name
     static Config = variation.Config
-    static inject = normalizeInject(variation.inject ?? variation.using)
+    static inject = normalizeInject(variation.inject)
     static reusable = variation.reusable
     static reactive = variation.reactive
 
@@ -141,6 +145,7 @@ export function defineVariation<
       public config: Config,
     ) {
       // define locales
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       ctx.i18n.define('zh-CN', require('./locales/zh-CN'))
       // register global command messages for this variation
       ctx.i18n.define('zh-CN', {
@@ -161,74 +166,74 @@ export function defineVariation<
       variation.init?.(command, this)
       command.option('quit', '-q')
 
-      command.action(async (argv, word) => {
-        const { session } = argv
-        const state = sessionState.get(`${session.guildId}.${session.channelId}`)
-        if ((argv.options as any).quit) {
-          if (state?.state !== Wordle.GameState.Active) {
+        .action(async (argv, word) => {
+          const { session } = argv
+          const state = sessionState.get(`${session.guildId}.${session.channelId}`)
+          if (argv.options.quit) {
+            if (state?.state !== Wordle.GameState.Active) {
+              return session?.text('wordle.messages.not-started', [command.name])
+            }
+            sessionState.delete(`${session.guildId}.${session.channelId}`)
+            variation.onGameEnd?.(argv, ctx)
+            return session?.text('wordle.messages.game-ended', [command.name, state.currentWord.join('')])
+          }
+
+          if (state?.state !== Wordle.GameState.Active && word) {
             return session?.text('wordle.messages.not-started', [command.name])
           }
-          sessionState.delete(`${session.guildId}.${session.channelId}`)
-          variation.onGameEnd?.(argv, ctx)
-          return session?.text('wordle.messages.game-ended', [command.name, state.currentWord.join('')])
-        }
+          if (state?.state === Wordle.GameState.Active) {
+            if (word) {
+              const result = await handleInput(word, state, argv, this)
+              const text: Element[] = []
+              switch (result.type) {
+                case 'bad-length':
+                  text.push(h.text(session?.text('wordle.messages.bad-length')))
+                  break
+                case 'invalid':
+                  text.push(h.text(session?.text('wordle.messages.invalid')))
+                  break
+                case 'correct':
+                  text.push(h.text(session?.text('wordle.messages.correct')))
+                  // Note: here we do not use `break` here as we need to render the result as well
+                  // eslint-disable-next-line no-fallthrough
+                case 'incorrect':
+                  text.push(await this.render(result.unitResults, state.guessedWords ?? [], session))
+                  break
+              }
 
-        if (state?.state !== Wordle.GameState.Active && word) {
-          return session?.text('wordle.messages.not-started', [command.name])
-        }
-        if (state?.state === Wordle.GameState.Active) {
-          if (word) {
-            const result = await handleInput(word, state, argv, this)
-            const text: Element[] = []
-            switch (result.type) {
-              case 'bad-length':
-                text.push(h.text(session?.text('wordle.messages.bad-length')))
-                break
-              case 'invalid':
-                text.push(h.text(session?.text('wordle.messages.invalid')))
-                break
-              case 'correct':
-                text.push(h.text(session?.text('wordle.messages.correct')))
-              // Note: here we do not use `break` here as we need to render the result as well
-              // eslint-disable-next-line no-fallthrough
-              case 'incorrect':
-                text.push(await this.render(result.unitResults, state.guessedWords ?? [], session))
-                break
-            }
+              await session.send(text)
 
-            await session.send(text)
-
-            if (result.type === 'correct') {
+              if (result.type === 'correct') {
               // game ended
-              sessionState.delete(`${session.guildId}.${session.channelId}`)
-              variation.onGameEnd?.(argv, ctx)
-            } else if (state.guessedCount >= variation.guessCount) {
-              await session.send(session?.text('wordle.messages.game-over', [state.currentWord.join('')]))
-              variation.onGameEnd?.(argv, ctx)
-              sessionState.delete(`${session.guildId}.${session.channelId}`)
-            } else if (result.type === 'incorrect') {
-              sessionState.set(`${session.guildId}.${session.channelId}`, {
-                state: Wordle.GameState.Active,
-                currentWord: state.currentWord,
-                guessedWords: [...(state.guessedWords ?? []), result],
-                guessedCount: state.guessedCount + 1,
-              })
+                sessionState.delete(`${session.guildId}.${session.channelId}`)
+                variation.onGameEnd?.(argv, ctx)
+              } else if (state.guessedCount >= variation.guessCount) {
+                await session.send(session?.text('wordle.messages.game-over', [state.currentWord.join('')]))
+                variation.onGameEnd?.(argv, ctx)
+                sessionState.delete(`${session.guildId}.${session.channelId}`)
+              } else if (result.type === 'incorrect') {
+                sessionState.set(`${session.guildId}.${session.channelId}`, {
+                  state: Wordle.GameState.Active,
+                  currentWord: state.currentWord,
+                  guessedWords: [...(state.guessedWords ?? []), result],
+                  guessedCount: state.guessedCount + 1,
+                })
+              }
+            } else {
+              return session?.text('wordle.messages.no-input', [command.name])
             }
           } else {
-            return session?.text('wordle.messages.no-input', [command.name])
-          }
-        } else {
           // start a new game
-          variation.onGameStart?.(argv, this)
-          const currentWord = await this.getCurrentWord(argv, ctx)
-          sessionState.set(`${session.guildId}.${session.channelId}`, {
-            state: Wordle.GameState.Active,
-            currentWord,
-            guessedCount: 1,
-          })
-          await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount]))
-        }
-      })
+            variation.onGameStart?.(argv, this)
+            const currentWord = await this.getCurrentWord(argv, ctx)
+            sessionState.set(`${session.guildId}.${session.channelId}`, {
+              state: Wordle.GameState.Active,
+              currentWord,
+              guessedCount: 1,
+            })
+            await session.send(session?.text('wordle.messages.game-started', [command.name, variation.guessCount]))
+          }
+        })
     }
 
     getCurrentWord(argv: Argv, ctx: Context) {
@@ -236,8 +241,8 @@ export function defineVariation<
     }
 
     async render(
-      word: Wordle.UnitResult<any>[],
-      guessedWords: Wordle.VerificatedResult[],
+      word: Wordle.UnitResult<unknown>[],
+      guessedWords: Wordle.VerificatedResult<unknown>[],
       session: Session,
     ): Promise<Element> {
       const width = word.length * 60 + 5 * (word.length + 1)
