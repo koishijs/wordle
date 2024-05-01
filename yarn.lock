@@ -1584,7 +1584,7 @@ __metadata:
     "@koishijs/plugin-database-memory": ^3.0.0
     "@koishijs/plugin-mock": ^2.6.5
     "@koishijs/vitepress": ^3.2.4
-    "@types/chai": ^4.3.12
+    "@types/chai": ^4.3.14
     "@types/mocha": ^10.0.6
     "@types/node": ^20.11.25
     "@typescript-eslint/eslint-plugin": ^7.4.0
@@ -1729,10 +1729,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chai@npm:^4.3.12":
-  version: 4.3.12
-  resolution: "@types/chai@npm:4.3.12"
-  checksum: 64e9354181046bfc78f527bba006f2e58b49efb702a501bdd1faec51e21e4d2248e7fb49843fd3f2189e3bf3680480b94e8a1ab6d097e67183bdeacd6d024ed6
+"@types/chai@npm:^4.3.14":
+  version: 4.3.14
+  resolution: "@types/chai@npm:4.3.14"
+  checksum: 962c67d1295005886ced8f87c73614616f6d65ed1ec71818021c9206decbaab1234da878295ba52450883c78a8ee5e1359e5deeadee3b7d058538b0ae8c67b08
   languageName: node
   linkType: hard
 

@@ -28,7 +28,7 @@
     "@koishijs/plugin-database-memory": "^3.0.0",
     "@koishijs/plugin-mock": "^2.6.5",
     "@koishijs/vitepress": "^3.2.4",
-    "@types/chai": "^4.3.12",
+    "@types/chai": "^4.3.14",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.25",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
