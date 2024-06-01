@@ -52,7 +52,7 @@
     "sass": "^1.71.1",
     "shx": "^0.3.4",
     "typescript": "^5.4.2",
-    "vitepress": "1.0.0-rc.24",
+    "vitepress": "1.2.2",
     "yakumo": "^0.3.13",
     "yakumo-esbuild": "^0.3.26",
     "yakumo-esbuild-yaml": "^0.3.1",
