@@ -33,7 +33,7 @@
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.14.1",
-    "c8": "^8.0.1",
+    "c8": "^10.1.2",
     "chai": "^5.1.0",
     "esbuild": "^0.20.2",
     "esbuild-register": "^3.5.0",
