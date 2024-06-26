@@ -24,10 +24,10 @@
     "test:html": "shx rm -rf coverage && c8 -r html yarn test"
   },
   "devDependencies": {
+    "@cordisjs/vitepress": "^3.2.7",
     "@hamster-bot/eslint-config": "^1.0.5",
     "@koishijs/plugin-database-memory": "^3.0.0",
     "@koishijs/plugin-mock": "^2.6.5",
-    "@koishijs/vitepress": "^3.2.4",
     "@types/chai": "^4.3.12",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.25",
@@ -52,7 +52,7 @@
     "sass": "^1.71.1",
     "shx": "^0.3.4",
     "typescript": "^5.4.2",
-    "vitepress": "1.0.0-rc.24",
+    "vitepress": "^1.2.3",
     "yakumo": "^0.3.13",
     "yakumo-esbuild": "^0.3.26",
     "yakumo-esbuild-yaml": "^0.3.1",
