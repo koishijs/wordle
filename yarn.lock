@@ -1338,12 +1338,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koishijs/plugin-mock@npm:^2.6.5":
-  version: 2.6.5
-  resolution: "@koishijs/plugin-mock@npm:2.6.5"
+"@koishijs/plugin-mock@npm:^2.6.6":
+  version: 2.6.6
+  resolution: "@koishijs/plugin-mock@npm:2.6.6"
   peerDependencies:
-    koishi: ^4.15.5
-  checksum: 10/9885d07026e15b0904bade3786df733ae74d669d2b3703b3545b6e0085bcdd2515cf6cc58c49c1419a18a5a6621a7d31228d97c07f41109b4a3c41f852c8fa0b
+    koishi: ^4.17.9
+  checksum: 10/4fa055cb18e6120787842a7362e05ab62fd9331f3ef4f6b656aa99b6bcc82e3e6954859782f289920f68296fb40068a1e1e70ae319824c98c2fe6e5a865ab195
   languageName: node
   linkType: hard
 
@@ -1650,7 +1650,7 @@ __metadata:
     "@cordisjs/vitepress": "npm:^3.2.7"
     "@hamster-bot/eslint-config": "npm:^1.0.5"
     "@koishijs/plugin-database-memory": "npm:^3.0.0"
-    "@koishijs/plugin-mock": "npm:^2.6.5"
+    "@koishijs/plugin-mock": "npm:^2.6.6"
     "@types/chai": "npm:^4.3.12"
     "@types/mocha": "npm:^10.0.6"
     "@types/node": "npm:^20.14.9"
