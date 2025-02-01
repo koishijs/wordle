@@ -49,7 +49,7 @@
     "koishi-plugin-puppeteer": "^3.8.2",
     "mocha": "^10.5.2",
     "prettier": "^3.2.5",
-    "sass": "^1.71.1",
+    "sass": "^1.83.4",
     "shx": "^0.3.4",
     "typescript": "^5.4.2",
     "vitepress": "^1.2.3",
