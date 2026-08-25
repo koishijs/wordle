@@ -246,7 +246,10 @@ export function defineVariation<
       session: Session,
     ): Promise<Element> {
       const width = word.length * 60 + 5 * (word.length + 1)
-      const height = variation.guessCount * 60 + 5 * (variation.guessCount + 1) + 68 + 20 * 2
+      // Calculate height based on actual number of guesses, not just guessCount
+      const totalGuesses = guessedWords.length + 1
+      const maxGuesses = Math.max(totalGuesses, variation.guessCount)
+      const height = maxGuesses * 60 + 5 * (maxGuesses + 1) + 68 + 20 * 2
       return await session.app.canvas.render(width, height, (ctx) => {
         // Set background color to white
         ctx.fillStyle = '#fff'
